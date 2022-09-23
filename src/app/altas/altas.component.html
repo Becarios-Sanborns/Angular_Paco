@@ -1,0 +1,18 @@
+<app-buscar></app-buscar>
+<div class="element-3">
+    <section class="form-register">
+        <h4>Registro de Usuario</h4>
+
+            <input class="campos" type="text" name="nombres" [(ngModel)]="nombres"  placeholder="Ingresa tus nombres"
+                required>
+            <input class="campos" type="text" name="apellidos" [(ngModel)]="apellidos"
+                placeholder="Ingresa tus apellidos" required>
+            <input class="campos" type="number" name="edad"  [(ngModel)]="edad" placeholder="Ingresa tu edad" required>
+            <input class="campos" type="email" name="correo" [(ngModel)]="correo" placeholder="Ingresa tu correo"
+                required>
+            <input class="botones" type="button" (click)="registrarUsuario()" value="Registrar">
+           
+
+    </section>
+</div>
+<app-tabla ></app-tabla>

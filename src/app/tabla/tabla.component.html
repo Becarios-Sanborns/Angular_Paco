@@ -1,0 +1,48 @@
+<section class="form-table">
+    <section>
+       
+        <input class="barraHerramientas" type="button" onclick="mostrarModal()" id="btnMostrar"
+            value="Abrir Modal">
+    </section>
+    <table id="personas" >
+        <tr>
+            <th>
+                <input class="maincheckbox"type="checkbox" onclick="seleccionarTodos()" id="cbxSeleccionarTodos">
+            </th>
+            <th>
+                Id
+            </th>
+            <th>
+                Nombres
+            </th>
+            <th>
+                Apellidos
+            </th>
+            <th>
+                Edad
+            </th>
+            <th>
+                Correo
+            </th>
+            <th>
+                Eliminar
+            </th>
+        </tr>
+        <tr *ngFor="let i of ListaPersonas">
+            
+            <td><input type="checkbox" id={{i.id}}></td>
+            <td>{{i.id}}</td>
+            <td>{{i.nombres}}</td>
+            <td>{{i.apellidos}}</td>
+            <td>{{i.edad}}</td>
+            <td>{{i.correo}}</td>
+            <td><input class="barraHerramientas" type="button" value="Eliminar" id={{i.id}}></td>
+        </tr>
+    </table>
+    <section class="pagination">
+        <input class="botones" type="button" onclick="inicialPaginacion()" value="<<">
+        <input class="botones" type="button" onclick="anteriorPaginacion()" value="<">
+        <input class="botones" type="button" onclick="siguientePaginacion()" value=">">
+        <input class="botones" type="button" onclick="finalPaginacion()" value=">>">
+    </section>
+</section>
