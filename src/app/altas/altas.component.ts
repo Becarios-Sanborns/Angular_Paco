@@ -1,4 +1,5 @@
 import { NgForOf } from '@angular/common';
+import { i18nMetaToJSDoc } from '@angular/compiler/src/render3/view/i18n/meta';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 
@@ -6,7 +7,7 @@ export interface Persona {
   id: number,
   nombres: string,
   apellidos: string,
-  edad: number,
+  edad: string,
   correo: string
 }
 
@@ -22,7 +23,7 @@ export class AltasComponent implements OnInit {
   Global_Id: number = 0;
   nombres: string = "";
   apellidos: string = "";
-  edad: number = 18;
+  edad: string = "";
   correo: string = "";
   registrado = false;
 
@@ -36,7 +37,47 @@ export class AltasComponent implements OnInit {
 
   registrarUsuario() {
 
+    var alerta = 0;
 
+    //VALIDACION DE LOS DATOS
+    if (this.nombres == "") {
+      alert("Llena el  campo de nombres");
+      alerta++;
+  }
+  if (this.apellidos == "") {
+      alert("Llena el  campo de apellidos");
+      alerta++;
+  }
+  if (this.edad == "") {
+      alert("Llena el campo de Edad");
+      alerta++;
+
+  } else {
+    var edad : number =+this.edad;
+      if (edad % 1 != 0) {
+          alert("Solo se aceptan numeros enteros");
+          alerta++;
+      }
+  }
+
+  if (this.correo == "") {
+      alerta++;
+      alert("Llena el  campo de correo");
+  }
+  else {
+      var ExpresionRegular = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+      var isValid = ExpresionRegular.test(this.correo);
+      if (isValid == false) {
+
+          alert("El correo es invalido");
+          alerta++;
+      }
+  }
+  if (alerta > 0) {
+    console.log("Campos no aceptados");
+      return
+  }
+  console.log("CAMPOS VALIDADOS");
     //AUMENTO EL ID SI PASA LA VALIDACION DE DATOS
     this.Global_Id++;
     //CREO LA NUEVA PERSONA CON LOS CAMPOS DE ALTAS
