@@ -17,6 +17,7 @@
 -Se logro dar de alta los usuarios y ser mostrados en tabla
 # Semana 4 (26/09/22 - 02/10/2022) 80 horas
 #1 Se implemento la validacion de los campos para dar de alta a los usuarios.
-#2 Ver videos para poder hacer la paginacion y el limite de datos que puede mostrar
+#2 Se consulto los videos que fueron compartidos para poder hacer la paginacion. (Comunicacion de servicios).
+#3 Ver videos para poder hacer la paginacion y el limite de datos que puede mostrar
 NOTA: Me quede atorado para que se pueda ejecutar un metodo que quiero que se ejecute cada vez que agrego una 
 persona y todavia no encuentro una posible solucion.
