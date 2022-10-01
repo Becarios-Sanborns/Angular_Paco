@@ -21,3 +21,7 @@
 #3 Ver videos para poder hacer la paginacion y el limite de datos que puede mostrar
 NOTA: Me quede atorado para que se pueda ejecutar un metodo que quiero que se ejecute cada vez que agrego una 
 persona y todavia no encuentro una posible solucion.
+#4 Ver videos de Servicios, OnChanges, Observables para poder establecer la cantidad de personas a mostrar en la tabla.
+No pude lograr hacerlo.
+#4 Reunion por GoogleMeet para compartir los avances que llevamos durante la semana.
+#5 Continue intentando  establecer el limite de las personas mostradas
