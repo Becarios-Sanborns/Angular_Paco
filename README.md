@@ -25,3 +25,4 @@ persona y todavia no encuentro una posible solucion.
 No pude lograr hacerlo.
 #4 Reunion por GoogleMeet para compartir los avances que llevamos durante la semana.
 #5 Continue intentando  establecer el limite de las personas mostradas
+#6 Repaso de los videos anteriormente consultados, para comenzar la implementacion de ellos.
