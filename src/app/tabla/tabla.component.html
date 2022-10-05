@@ -28,7 +28,7 @@
                 Eliminar
             </th>
         </tr>
-        <tr *ngFor="let i of ListaPersonas">
+        <tr *ngFor="let i of ListaPersonasMostrados">
             
             <td><input type="checkbox" id={{i.id}}></td>
             <td>{{i.id}}</td>
@@ -41,8 +41,8 @@
     </table>
     <section class="pagination">
         <input class="botones" type="button" onclick="inicialPaginacion()" value="<<">
-        <input class="botones" type="button" onclick="anteriorPaginacion()" value="<">
-        <input class="botones" type="button" onclick="siguientePaginacion()" value=">">
-        <input class="botones" type="button" onclick="finalPaginacion()" value=">>">
+        <input class="botones" type="button" (click)="paginacionAnterior()" value="<">
+        <input class="botones" type="button" (click)="paginacionSiguiente()" value=">">
+        <input class="botones" type="button" (click)="paginacionFinal()" value=">>">
     </section>
 </section>

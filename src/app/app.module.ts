@@ -8,6 +8,7 @@ import { BuscarComponent } from './buscar/buscar.component';
 import { TablaComponent } from './tabla/tabla.component';
 import { FormsModule } from '@angular/forms';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,7 +21,7 @@ import { FormsModule } from '@angular/forms';
     AppRoutingModule,
     FormsModule
   ],
-  providers: [],
+  
   bootstrap: [AppComponent]
 })
 export class AppModule { }

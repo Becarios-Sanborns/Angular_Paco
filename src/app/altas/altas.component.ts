@@ -3,6 +3,7 @@ import { i18nMetaToJSDoc } from '@angular/compiler/src/render3/view/i18n/meta';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 
+
 export interface Persona {
   id: number,
   nombres: string,
@@ -20,16 +21,19 @@ export interface Persona {
 
 export class AltasComponent implements OnInit {
 
+  PosicionPaginiacion = 0;
   Global_Id: number = 0;
   nombres: string = "";
   apellidos: string = "";
   edad: string = "";
   correo: string = "";
-  registrado = false;
 
+  
   personas: Persona[] = [];
 
-  constructor() { }
+  constructor() { 
+
+  }
 
   @Output() EnvioPadre = new EventEmitter<Persona[]>();
   ngOnInit(): void {
@@ -91,15 +95,15 @@ export class AltasComponent implements OnInit {
 
     //AGREGO LA NUEVA PERSONA A LA LISTA
     this.personas.push(NuevaPersona);
+    this.PosicionPaginiacion++;
+
+    //EJECUTAMOS EL SERVICIO DE ACTUALIZAR LA TABLA
+    
+    //this.ServicioActualizar.actualizarTabla(this.personas,this.PosicionPaginiacion);
+
     //ENVIO LA LISTA AL PADRE
     this.EnvioPadre.emit(this.personas);
-
-   /* 
-    for(var i = 0; i<this.personas.length;i++)
-    {
-      console.log(this.personas[i]);
-    }*/
-
+    
   }
 
 }
