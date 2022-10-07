@@ -26,3 +26,9 @@ No pude lograr hacerlo.
 #4 Reunion por GoogleMeet para compartir los avances que llevamos durante la semana.
 #5 Continue intentando  establecer el limite de las personas mostradas
 #6 Repaso de los videos anteriormente consultados, para comenzar la implementacion de ellos.
+///////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////
+# Semana 1 (03/10/22 - 07/10/2022) 20 horas
+#1 Reunion por Google meet para mostrar cuales son nuestros errores/problemas y como poder solucionarlos, en mi caso se explico y se pudo llegar a la solucion.
+#2 Implemente lo aprendido en la reunion y ya hay un limite de personas que pueden ser mostradas, ademas del funcionamiento del boton de paginacion siguiente, final y anterior. Nota: Falta la paginacion de llevar al inicio.
