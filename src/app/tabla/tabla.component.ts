@@ -142,6 +142,24 @@ constructor() { }
       console.log("POSICION: "+this.PosicionPaginacion);
     }
   }
+
+
+  paginacionInicial(){
+    if(this.PosicionPaginacion>this.NumeroFilas)
+    {
+      this.ListaPersonasMostrados=[]; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
+      var limite: number = 0;
+    
+      for(var i = 0; i<this.NumeroFilas; i++)
+      {
+        this.ListaPersonasMostrados.push(this.ListaPersonas[i]);
+      }
+      this.PosicionPaginacion=this.NumeroFilas;
+    }else{
+      console.log("Ya estas en el inicio de la paginacion");
+    }
+
+  }
 }
 
 
