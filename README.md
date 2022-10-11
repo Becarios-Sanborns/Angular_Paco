@@ -29,12 +29,12 @@ No pude lograr hacerlo.
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-# Semana 1 (03/10/22 - 07/10/2022) 20 horas
+# Semana 5 (03/10/22 - 07/10/2022) 100 horas
 #1 Reunion por Google meet para mostrar cuales son nuestros errores/problemas y como poder solucionarlos, en mi caso se explico y se pudo llegar a la solucion.
 #2 Implemente lo aprendido en la reunion y ya hay un limite de personas que pueden ser mostradas, ademas del funcionamiento del boton de paginacion siguiente, final y anterior. Nota: Falta la paginacion de llevar al inicio.
 #3 Añadir la funcion del boton de paginacion inicial, investigacion rapida de como crear los checkbox de manera dinamica y poder almacenarlos.
 #4 Investigar videos de como utilizar las forms dinamicos, las diferentes formas de almacenar lo checkbox y mostrarlos, consultar respositorios y foros.
 #5 Comprender el funcionamiento y la implementacion de los videos consultados anteriormente.
 
-# Semana 2 (10/10/22 - 14/10/2022) 20 horas
+# Semana 7 (10/10/22 - 14/10/2022) 120 horas
 #1 Se logro almacenar el estado de los checkbox de cada una de las personas, asi como poder seleccionar y deseleccionar con el checkbox principal los demas checkbox.
