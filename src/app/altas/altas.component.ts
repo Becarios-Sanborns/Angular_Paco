@@ -9,7 +9,8 @@ export interface Persona {
   nombres: string,
   apellidos: string,
   edad: string,
-  correo: string
+  correo: string,
+  seleccionado:boolean
 }
 
 @Component({
@@ -21,12 +22,14 @@ export interface Persona {
 
 export class AltasComponent implements OnInit {
 
-  PosicionPaginiacion = 0;
+ 
   Global_Id: number = 0;
   nombres: string = "";
   apellidos: string = "";
   edad: string = "";
   correo: string = "";
+  seleccionado:boolean = false;
+  
 
   
   personas: Persona[] = [];
@@ -90,17 +93,12 @@ export class AltasComponent implements OnInit {
       nombres: this.nombres,
       apellidos: this.apellidos,
       edad: this.edad,
-      correo: this.correo
+      correo: this.correo,
+      seleccionado:this.seleccionado
     }
 
     //AGREGO LA NUEVA PERSONA A LA LISTA
     this.personas.push(NuevaPersona);
-    this.PosicionPaginiacion++;
-
-    //EJECUTAMOS EL SERVICIO DE ACTUALIZAR LA TABLA
-    
-    //this.ServicioActualizar.actualizarTabla(this.personas,this.PosicionPaginiacion);
-
     //ENVIO LA LISTA AL PADRE
     this.EnvioPadre.emit(this.personas);
     

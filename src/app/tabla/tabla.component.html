@@ -1,13 +1,13 @@
 <section class="form-table">
     <section>
        
-        <input class="barraHerramientas" type="button" onclick="mostrarModal()" id="btnMostrar"
+        <input class="barraHerramientas" type="button" (click)="mostrarSeleccionados()" id="btnMostrar"
             value="Abrir Modal">
     </section>
     <table id="personas" >
         <tr>
             <th>
-                <input class="maincheckbox"type="checkbox" onclick="seleccionarTodos()" id="cbxSeleccionarTodos">
+                <input class="maincheckbox"type="checkbox" (click)="checkAllCheckbox($event)" id="cbxSeleccionarTodos">
             </th>
             <th>
                 Id
@@ -30,7 +30,10 @@
         </tr>
         <tr *ngFor="let i of ListaPersonasMostrados">
             
-            <td><input type="checkbox" id={{i.id}}></td>
+            <td><input type="checkbox" 
+                id={{i.id}} 
+                 [checked]="i.seleccionado"
+                 (change)="onChangePersona($event)"></td>
             <td>{{i.id}}</td>
             <td>{{i.nombres}}</td>
             <td>{{i.apellidos}}</td>
