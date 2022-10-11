@@ -36,5 +36,5 @@ No pude lograr hacerlo.
 #4 Investigar videos de como utilizar las forms dinamicos, las diferentes formas de almacenar lo checkbox y mostrarlos, consultar respositorios y foros.
 #5 Comprender el funcionamiento y la implementacion de los videos consultados anteriormente.
 
-# Semana 7 (10/10/22 - 14/10/2022) 120 horas
+# Semana 6 (10/10/22 - 14/10/2022) 120 horas
 #1 Se logro almacenar el estado de los checkbox de cada una de las personas, asi como poder seleccionar y deseleccionar con el checkbox principal los demas checkbox.
