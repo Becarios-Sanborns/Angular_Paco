@@ -7,7 +7,11 @@
     <table id="personas" >
         <tr>
             <th>
-                <input class="maincheckbox"type="checkbox" (click)="checkAllCheckbox($event)" id="cbxSeleccionarTodos">
+                <input class="maincheckbox"type="checkbox" 
+                [(ngModel)]="mainCheckbox"
+                [value]="-1"
+                (change)="onChangePersona($event)"      
+                >
             </th>
             <th>
                 Id
@@ -31,7 +35,7 @@
         <tr *ngFor="let i of ListaPersonasMostrados">
             
             <td><input type="checkbox" 
-                id={{i.id}} 
+                [value]="i.id"
                  [checked]="i.seleccionado"
                  (change)="onChangePersona($event)"></td>
             <td>{{i.id}}</td>

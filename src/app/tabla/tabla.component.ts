@@ -13,15 +13,18 @@ export class TablaComponent implements OnInit {
 
   PosicionPaginacion: number = 0;
   NumeroFilas: number = 5;
-
+  mainCheckbox: boolean = false;
 
 
 
 
 
   @Input() listaPersonas$ = new Observable();
-  ListaPersonas: Persona[] = [];
-  ListaPersonasMostrados: Persona[] = [];
+  ListaPersonas: Persona[] = []; //LISTA COMPLETA DE LAS PERSONAS REGISTRADAS
+  ListaPersonasMostrados: Persona[] = []; //LISTA DE LAS PERSONA QUE VAN A SER MOSTRADAS POR LA PAGINACION
+
+
+  ListaSeleccionados: Persona[] = []; //LISTA DE LAS PERSONAS QUE ESTAN SELECCIONADAS CON EL CHECK
   tamañoLista: number = 0;
 
 
@@ -53,8 +56,11 @@ export class TablaComponent implements OnInit {
           console.log("Posicion: " + this.PosicionPaginacion);
 
         }
-      }
+      } console.log("Tamaño Lista: " + this.tamañoLista);
+      this.mainCheckbox=false;
     })
+
+
   }
 
 
@@ -87,6 +93,7 @@ export class TablaComponent implements OnInit {
 
   //FUNCIONA PAGINACION FINAL SIN BUSCAR  LAS PERSONAS
   paginacionFinal() {
+    this.tamañoLista = this.ListaPersonas.length;
     if (this.PosicionPaginacion < this.tamañoLista) {
       this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
       var limite: number = 0;
@@ -96,11 +103,14 @@ export class TablaComponent implements OnInit {
       }
       for (var i = this.tamañoLista - limite; i < this.tamañoLista; i++) {
         this.ListaPersonasMostrados.push(this.ListaPersonas[i]);
-        this.PosicionPaginacion++;
+
       }
+
     } else {
       console.log("YA ESTAS EN EL FINAL");
     }
+    this.PosicionPaginacion = this.tamañoLista;
+    console.log("POSICION: " + this.PosicionPaginacion);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -147,38 +157,43 @@ export class TablaComponent implements OnInit {
 
 
   //Evento para actualizar el estado de los checkbox
-
+   contador:number = 0;
   onChangePersona($event: any) {
-    const id = $event.target.id;
+    const id = $event.target.value;
     const isChecked = $event.target.checked;
+    
 
-    if (isChecked) {
-      this.ListaPersonas[id - 1].seleccionado = true;
-
-    } else {
-      this.ListaPersonas[id - 1].seleccionado = false;
-    }
+    this.ListaPersonas = this.ListaPersonas.map((d) => {
+      
+      if (d.id == id) {
+        if(isChecked==true)
+      {
+        this.contador++;
+        if(this.contador==this.tamañoLista)
+        {      
+          this.mainCheckbox=true;   
+        }
+      }else{
+        this.contador--;
+        this.mainCheckbox=false;
+      }
+        d.seleccionado = isChecked;
+        return d;
+      }
+      
+      if(id == -1)
+      {
+        d.seleccionado=this.mainCheckbox;
+        
+        return d;
+      }
+      return d;
+    });
+    
   }
 
 
-  //METODO PARA SELECCIONAR/DESELECICONAR TODOS LOS CHECKBOX
-  checkAllCheckbox($event: any) {
-    const isChecked = $event.target.checked;
-
-    if (isChecked) {
-      for (var i = 0; i < this.tamañoLista; i++) {
-        this.ListaPersonas[i].seleccionado = true;
-      }
-      console.log("SELECCIONO TODOS");
-
-    } else {
-      for (var i = 0; i < this.tamañoLista; i++) {
-        this.ListaPersonas[i].seleccionado = false;
-      }
-      console.log("DESELECCIONO TODOS");
-    }
-
-  }
+  
 
   //METODO PARA MOSTAR EL MODAL DE LAS PERSONAS SELECCIONADAS: 
   mostrarSeleccionados() {
