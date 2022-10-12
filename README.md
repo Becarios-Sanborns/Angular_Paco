@@ -38,3 +38,6 @@ No pude lograr hacerlo.
 
 # Semana 6 (10/10/22 - 14/10/2022) 120 horas
 #1 Se logro almacenar el estado de los checkbox de cada una de las personas, asi como poder seleccionar y deseleccionar con el checkbox principal los demas checkbox.
+#2 Investigacion para poder hacer el modal y como mostrarlo con el boton.
+#3 Junta con los asesores para resolver dudas y mostrar avances. A mi se me encontron un error en la paginacion y en el checkbox
+#4 Correccion de los errores mencionados anteriormente.
