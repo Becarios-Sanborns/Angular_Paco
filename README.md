@@ -41,3 +41,7 @@ No pude lograr hacerlo.
 #2 Investigacion para poder hacer el modal y como mostrarlo con el boton.
 #3 Junta con los asesores para resolver dudas y mostrar avances. A mi se me encontron un error en la paginacion y en el checkbox
 #4 Correccion de los errores mencionados anteriormente.
+#5 Creacion del componente modal, con su estructura html y su estilado con css
+#6 Comunicacion para el envio de informacion entre la tabla y el modal de los elementos seleccionados de la tabla.
+#7 Lograr mostrar el modal con los elementos seleccionados.
+Nota: Tengo un error al momento de cerrar el modal y volver quererlo abrir.
