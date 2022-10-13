@@ -52,4 +52,8 @@
         <input class="botones" type="button" (click)="paginacionSiguiente()" value=">">
         <input class="botones" type="button" (click)="paginacionFinal()" value=">>">
     </section>
+    <app-modal-mostrar *ngIf="mostrar" [ListaModal]="ListaSeleccionados"></app-modal-mostrar>
 </section>
+
+
+

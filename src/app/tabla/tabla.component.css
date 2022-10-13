@@ -12,6 +12,12 @@
      border: 1px solid #212B38;
   
  }
+
+ .tablamodal{
+    align-items: center;
+    margin-top: 50px;
+    background: #ff1d58;
+}
  
  .tablamodal{
      align-items: center;

@@ -32,6 +32,7 @@ export class TablaComponent implements OnInit {
 
   ngOnInit(): void {
     //SE ACTUALIAZRAN LOS DATOS CADA VEZ QUE SEA NECESARIO
+  
     this.listaPersonas$.subscribe((datos) => {
       this.ListaPersonas = datos as Persona[];
       this.tamañoLista = this.ListaPersonas.length;
@@ -157,7 +158,7 @@ export class TablaComponent implements OnInit {
 
 
   //Evento para actualizar el estado de los checkbox
-   contador:number = 0;
+   contador:number = 0; //Variable que me ayudara a saber cuantos estan seleccionados
   onChangePersona($event: any) {
     const id = $event.target.value;
     const isChecked = $event.target.checked;
@@ -195,9 +196,25 @@ export class TablaComponent implements OnInit {
 
   
 
+  mostrar : boolean = false;
   //METODO PARA MOSTAR EL MODAL DE LAS PERSONAS SELECCIONADAS: 
   mostrarSeleccionados() {
 
+   
+    if(this.contador>0)
+    {
+      this.ListaSeleccionados = this.ListaPersonas.filter((Persona)=> Persona.seleccionado==true)
+      this.mostrar=!this.mostrar;
+      
+      
+      
+      
+      console.log(this.ListaSeleccionados)
+   
+    } 
+    else{
+      console.log("No hay ningun seleccionado");
+    }
   }
 }
 
