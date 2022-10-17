@@ -45,3 +45,6 @@ No pude lograr hacerlo.
 #6 Comunicacion para el envio de informacion entre la tabla y el modal de los elementos seleccionados de la tabla.
 #7 Lograr mostrar el modal con los elementos seleccionados.
 Nota: Tengo un error al momento de cerrar el modal y volver quererlo abrir.
+#8 Junta para hablar sore los avances y problemas que se nos han presentado. En mi caso se presento un problema con el abrir/cerrar del modal.
+
+# Semana 7 (17/10/22 - 21/10/2022) 140 horas
