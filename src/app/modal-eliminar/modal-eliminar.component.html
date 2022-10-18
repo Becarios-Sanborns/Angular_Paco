@@ -1,0 +1,9 @@
+<section class="modal-container" (click)="NoEliminar()"   [ngStyle]=" isVisible ? {display:'visible'} : {display:'none'}">
+    <section class="modaleliminar modal-close-eliminar">
+        <section class="modal-textos">
+            <h2>¿Seguro que quieres eliminar?</h2>
+            <input class="aceptar" type="button" (click)="Eliminar()" value="✔">
+            <input class="cancelar" type="button" (click)="NoEliminar()" value="X">
+        </section>
+    </section>
+</section>

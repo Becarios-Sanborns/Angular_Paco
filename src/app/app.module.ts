@@ -8,6 +8,7 @@ import { BuscarComponent } from './buscar/buscar.component';
 import { TablaComponent } from './tabla/tabla.component';
 import { FormsModule } from '@angular/forms';
 import { ModalMostrarComponent } from './modal-mostrar/modal-mostrar.component';
+import { ModalEliminarComponent } from './modal-eliminar/modal-eliminar.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { ModalMostrarComponent } from './modal-mostrar/modal-mostrar.component';
     AltasComponent,
     BuscarComponent,
     TablaComponent,
-    ModalMostrarComponent
+    ModalMostrarComponent,
+    ModalEliminarComponent
   ],
   imports: [
     BrowserModule,

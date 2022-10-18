@@ -32,7 +32,7 @@ export class TablaComponent implements OnInit {
 
   ngOnInit(): void {
     //SE ACTUALIAZRAN LOS DATOS CADA VEZ QUE SEA NECESARIO
-  
+
     this.listaPersonas$.subscribe((datos) => {
       this.ListaPersonas = datos as Persona[];
       this.tamañoLista = this.ListaPersonas.length;
@@ -58,7 +58,7 @@ export class TablaComponent implements OnInit {
 
         }
       } console.log("Tamaño Lista: " + this.tamañoLista);
-      this.mainCheckbox=false;
+      this.mainCheckbox = false;
     })
 
 
@@ -158,62 +158,86 @@ export class TablaComponent implements OnInit {
 
 
   //Evento para actualizar el estado de los checkbox
-   contador:number = 0; //Variable que me ayudara a saber cuantos estan seleccionados
+  contador: number = 0; //Variable que me ayudara a saber cuantos estan seleccionados
   onChangePersona($event: any) {
     const id = $event.target.value;
     const isChecked = $event.target.checked;
-    
+
 
     this.ListaPersonas = this.ListaPersonas.map((d) => {
-      
+
       if (d.id == id) {
-        if(isChecked==true)
-      {
-        this.contador++;
-        if(this.contador==this.tamañoLista)
-        {      
-          this.mainCheckbox=true;   
+        if (isChecked == true) {
+          this.contador++;
+          if (this.contador == this.tamañoLista) {
+            this.mainCheckbox = true;
+          }
+        } else {
+          this.contador--;
+          this.mainCheckbox = false;
         }
-      }else{
-        this.contador--;
-        this.mainCheckbox=false;
-      }
         d.seleccionado = isChecked;
         return d;
       }
-      
-      if(id == -1)
-      {
-        d.seleccionado=this.mainCheckbox;
-        
+
+      if (id == -1) {
+        d.seleccionado = this.mainCheckbox;
+
         return d;
       }
       return d;
     });
-    
+
   }
 
 
-  
-
-  mostrar : boolean = false;
+  isVisibleSeleccionados: boolean = false; //METODO BOOLEANO QUE FUNCIONARA PARA MOSTRAR CUALQUIERA DE LOS 2 MODALES
   //METODO PARA MOSTAR EL MODAL DE LAS PERSONAS SELECCIONADAS: 
   mostrarSeleccionados() {
-
-   
-    if(this.contador>0)
-    {
-      this.ListaSeleccionados = this.ListaPersonas.filter((Persona)=> Persona.seleccionado==true)
-      this.mostrar=!this.mostrar;
-      
-      
-      
-      
+    if (this.contador > 0) {
+      this.ListaSeleccionados = this.ListaPersonas.filter((Persona) => Persona.seleccionado == true)
+      this.isVisibleSeleccionados = !this.isVisibleSeleccionados;
+      console.log(this.isVisibleSeleccionados)
       console.log(this.ListaSeleccionados)
-   
-    } 
-    else{
+
+    }
+    else {
       console.log("No hay ningun seleccionado");
+    }
+  }
+
+  get_isVisibleSeleccionados(e: boolean) //EVENTO QUE RETORNA UN FALSE DEL MODAL, 
+  {                  //EL CUAL SIGNIFICA QUE SE OCULTO
+    this.isVisibleSeleccionados = e;
+  }
+
+
+  //METODOS PARA MOSTRAR OCULTAR EL MODAL DE ELIMINAR
+  isVisibleEliminar: boolean = false;
+  IdPersona: number = 0;
+  mostrarEliminar($event: Persona) {
+    this.IdPersona = $event.id;
+    this.isVisibleEliminar = !this.isVisibleEliminar;
+    console.log(this.IdPersona);
+  }
+  get_isVisibleEliminar(e: boolean)//EVENTO QUE RETORNA UN FALSE DEL MODAL,          
+  {                               //EL CUAL SIGNIFICA QUE SE OCULTO
+    this.isVisibleEliminar = e;
+  }
+
+  get_ListaActualizada(e:Persona[])
+  {
+    this.ListaPersonas=e;
+    this.ActualizarTabla();
+    //FALTA DECREMENTAR EL ID MANDANDO UN OUTPUT AL PADRE HASTA LLEGAR AL COMPONENTE TABLA
+  }
+
+
+  ActualizarTabla()
+  {
+    if(this.ListaPersonas.length>this.PosicionPaginacion)
+    {
+      
     }
   }
 }

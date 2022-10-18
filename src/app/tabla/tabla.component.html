@@ -43,7 +43,8 @@
             <td>{{i.apellidos}}</td>
             <td>{{i.edad}}</td>
             <td>{{i.correo}}</td>
-            <td><input class="barraHerramientas" type="button" value="Eliminar" id={{i.id}}></td>
+
+            <td><input class="barraHerramientas" type="button" value="Eliminar" (click)="mostrarEliminar(i)"></td>
         </tr>
     </table>
     <section class="pagination">
@@ -52,7 +53,8 @@
         <input class="botones" type="button" (click)="paginacionSiguiente()" value=">">
         <input class="botones" type="button" (click)="paginacionFinal()" value=">>">
     </section>
-    <app-modal-mostrar *ngIf="mostrar" [ListaModal]="ListaSeleccionados"></app-modal-mostrar>
+    <app-modal-mostrar (isVisibleEvent)="get_isVisibleSeleccionados($event)" *ngIf="isVisibleSeleccionados" [ListaModal]="ListaSeleccionados" [isVisible]="isVisibleSeleccionados"></app-modal-mostrar>
+    <app-modal-eliminar (isVisibleEvent)="get_isVisibleEliminar($event)" (ListaActualizada)="get_ListaActualizada($event)" *ngIf="isVisibleEliminar" [ListaPersonas]="ListaPersonas" [isVisible]="isVisibleEliminar" [IdPersona]="IdPersona"></app-modal-eliminar>
 </section>
 
 
