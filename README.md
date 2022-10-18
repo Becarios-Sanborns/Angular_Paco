@@ -48,6 +48,7 @@ Nota: Tengo un error al momento de cerrar el modal y volver quererlo abrir.
 #8 Junta para hablar sore los avances y problemas que se nos han presentado. En mi caso se presento un problema con el abrir/cerrar del modal.
 
 # Semana 7 (17/10/22 - 21/10/2022) 140 horas
-#1Solucion del error del modal mostrar personas seleccionadas.
-#2Junta en Meet para compartir los avances y errores que tenemos.
-#3Creacion del componente modal eliminar, ya puedo eliminar personas de la lista
+#1 Solucion del error del modal mostrar personas seleccionadas.
+#2 Junta en Meet para compartir los avances y errores que tenemos.
+#3 Creacion del componente modal eliminar, ya puedo eliminar personas de la lista
+#4 Se actualiza la tabla al momento de eliminar.
