@@ -228,17 +228,84 @@ export class TablaComponent implements OnInit {
   get_ListaActualizada(e:Persona[])
   {
     this.ListaPersonas=e;
-    this.ActualizarTabla();
+    if(this.ListaPersonas.length!=0)
+    {
+      this.ActualizarTabla();
+    }
+    else{
+      this.ListaPersonasMostrados=[];
+      this.PosicionPaginacion--;
+    }
+    
     //FALTA DECREMENTAR EL ID MANDANDO UN OUTPUT AL PADRE HASTA LLEGAR AL COMPONENTE TABLA
   }
 
 
   ActualizarTabla()
   {
-    if(this.ListaPersonas.length>this.PosicionPaginacion)
+    var Inicio =0;
+    var limite = 0;
+    
+    this.ListaPersonasMostrados = [];
+    this.tamañoLista = this.ListaPersonas.length;
+    console.log("111111111111111111111111111111111111111111111111111111111111111")
+    console.log("POSICION PAGINACION: "+this.PosicionPaginacion);
+    console.log("TAMAÑO LISTA: "+this.tamañoLista);
+    if(this.PosicionPaginacion<this.ListaPersonas.length)
     {
+      Inicio = this.PosicionPaginacion - this.NumeroFilas +1;
+
+      limite=this.PosicionPaginacion
+      console.log("LIMITE: "+limite);
+      console.log("INICIO: "+Inicio);
+      for( var i = Inicio; i<=limite; i++)
+      {     
+        this.ListaPersonasMostrados.push(this.ListaPersonas[i-1]);
+      }
+
       
+    }else{
+      console.log("22222222222222222222222222222222222222222222222222222222222222");
+      this.PosicionPaginacion=this.ListaPersonas.length;
+      console.log("POSICION: "+this.PosicionPaginacion)
+      limite = this.PosicionPaginacion%this.NumeroFilas;
+      Inicio=this.PosicionPaginacion-limite+1;
+      if(limite==0) //SI EL RESIDUO ES IGUAL A 0 SIGNIFICA QUE MOSTRARE TODOS LOS ELEMENTOS
+      {
+        limite=this.NumeroFilas;
+        Inicio=this.PosicionPaginacion-this.NumeroFilas+1;
+      }
+
+      if(this.PosicionPaginacion>this.NumeroFilas)
+      {// AQUI ENTRO SI POSICION >NUMERO FILAS
+        limite=this.ListaPersonas.length;
+        console.log("ENTREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+        this.PosicionPaginacion=this.ListaPersonas.length;
+        if(this.tamañoLista<=this.NumeroFilas)
+        {
+          Inicio=1;
+          if(this.tamañoLista<this.NumeroFilas)
+          {
+            this.PosicionPaginacion--;
+          }
+          
+        }
+        
+      }
+      else
+      {//AQUI ENTRO SI POSICION <= NUMERO FILAS
+
+      }
+      console.log("INICIO VALE: "+Inicio);
+      console.log("LIMITE VALE: "+limite);
+      for(var i = Inicio; i<=limite;i++)
+      {
+        this.ListaPersonasMostrados.push(this.ListaPersonas[i-1]);
+      } 
+      this.PosicionPaginacion=this.ListaPersonas.length;
     }
+    console.log("POSICION FINAL: "+this.PosicionPaginacion);
+    console.log("-----------------------------------------------------------");
   }
 }
 

@@ -30,11 +30,12 @@ export class ModalEliminarComponent implements OnInit {
     console.log("ELIMINO")
     var posicion = this.IdPersona;
     posicion = posicion-1;
-    this.ListaPersonas.splice(posicion,1)
-    console.log("LISTA ACTUALIZADA: "+this.ListaPersonas);
-    for(var i = 0; i<this.ListaPersonas.length;i++)
+    this.ListaPersonas.splice(posicion,1)// ELIMINO LA PERSONA 
+
+    //RECORRO LOS ID's DE LAS PERSONAS QUE SE ENCONTRABAN DESPUES DE LA ELIMINADA
+    for(var i = posicion; i<this.ListaPersonas.length; i++)
     {
-      console.log(this.ListaPersonas[i]);
+      this.ListaPersonas[i].id=this.ListaPersonas[i].id-1;
     }
     this.isVisible=false;
     this.ListaActualizada.emit(this.ListaPersonas);
