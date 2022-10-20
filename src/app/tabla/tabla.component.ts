@@ -1,6 +1,7 @@
-import { Component, Input, OnInit, } from '@angular/core';
+import { Component, Input, OnInit, Output,EventEmitter, forwardRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Persona } from '../altas/altas.component';
+import { BusquedaService } from '../services/busqueda.service';
 
 
 
@@ -15,24 +16,103 @@ export class TablaComponent implements OnInit {
   NumeroFilas: number = 5;
   mainCheckbox: boolean = false;
 
-
-
-
-
   @Input() listaPersonas$ = new Observable();
   ListaPersonas: Persona[] = []; //LISTA COMPLETA DE LAS PERSONAS REGISTRADAS
   ListaPersonasMostrados: Persona[] = []; //LISTA DE LAS PERSONA QUE VAN A SER MOSTRADAS POR LA PAGINACION
-
+  
 
   ListaSeleccionados: Persona[] = []; //LISTA DE LAS PERSONAS QUE ESTAN SELECCIONADAS CON EL CHECK
   tamañoLista: number = 0;
 
+  //VARIABLES PARAA LA BUSQUEDA
+  NombreBuscado :string =""; //NOMBRE DE PERSONA BUSCADA
+  ListaBusqueda :Persona[]=[];
+  PosicionPaginacionBusqueda :number=0;
 
-  constructor() { }
+  constructor(private busquedaService: BusquedaService) { }
 
-  ngOnInit(): void {
-    //SE ACTUALIAZRAN LOS DATOS CADA VEZ QUE SEA NECESARIO
+  ngOnInit() {
+    //SERVICIO MOSTRA TABLA CUANDO BUSCO
+    this.busquedaService.nombre$.subscribe(texto =>{
+      this.NombreBuscado=texto;
+      //DEBO ELIMINAR LAS SELECCIONES DE LOS CHECKBOX
 
+      
+
+
+
+      if(this.NombreBuscado!="")
+      {
+        //AQUI BUSCO
+        this.ListaPersonasMostrados=[];
+        this.PosicionPaginacionBusqueda = 0;
+
+
+        this.ListaBusqueda=[];
+        for (var i = 0; i < (this.ListaPersonas.length); i++) {
+          var nombres = this.ListaPersonas[i].nombres;
+          if (nombres.includes(this.NombreBuscado) == true) {
+            //  console.log("Encontre similitud");
+              var personaEncontrada = this.ListaPersonas[i];
+              this.ListaBusqueda.push(personaEncontrada); //AQUI AÑADO LAS SIMILITUDES A LA LISTA DE BUSQUEDA
+          }
+      }
+     /* if (this.ListaBusqueda.length < this.NumeroFilas) {
+          var aux = 0;
+          aux = this.ListaBusqueda.length % this.NumeroFilas;
+          this.PosicionPaginacion = aux - 1;
+          if (aux == 0) {
+              aux = this.NumeroFilas;
+              this.PosicionPaginacionBusqueda = this.NumeroFilas - 1;
+
+          }
+          console.log("POSICION LISTA: " + this.PosicionPaginacionBusqueda);
+         */
+        //IMPRIMMO LA LISTA DE BUSQUEDA
+        console.log("RESULTDOS BUSQUEDA");
+        for(var i =0; i<this.ListaBusqueda.length;i++){
+          console.log(this.ListaBusqueda[i]);
+        }
+
+        if(this.ListaBusqueda.length>=this.NumeroFilas)
+        {
+          this.PosicionPaginacionBusqueda=this.NumeroFilas;
+
+        }
+        else{
+          //AQUI ENTRO SI ES MENOR DEL NUMERO DE FILAS
+          this.PosicionPaginacionBusqueda=this.ListaBusqueda.length%this.NumeroFilas;
+        }
+        for(var i =1; i<=this.PosicionPaginacion; i++)
+        {
+          this.ListaPersonasMostrados.push(this.ListaBusqueda[i-1]);
+        }
+
+      }else{
+
+        //AAQUI ENTRO CUANDO NO ESTOY BUSCANDO
+        this.PosicionPaginacion=0;
+        this.ListaPersonasMostrados=[];
+
+        
+        if(this.ListaPersonas.length>=this.NumeroFilas)
+        {
+          this.PosicionPaginacion=this.NumeroFilas;
+        }
+        else{
+          this.PosicionPaginacion=this.ListaPersonas.length%this.NumeroFilas;
+        }
+        for(var i =1; i<= this.PosicionPaginacion; i++)
+          {
+            this.ListaPersonasMostrados.push(this.ListaPersonas[i-1]);
+          }
+
+        //AQUI CUANDO DEJO DE BUSCAR
+
+      }
+    });
+    
+    //SERVICIO PARA ACTUALIZAR LA TABLA 
     this.listaPersonas$.subscribe((datos) => {
       this.ListaPersonas = datos as Persona[];
       this.tamañoLista = this.ListaPersonas.length;
@@ -61,6 +141,8 @@ export class TablaComponent implements OnInit {
       this.mainCheckbox = false;
     })
 
+    
+   
 
   }
 
@@ -306,7 +388,10 @@ export class TablaComponent implements OnInit {
     }
     console.log("POSICION FINAL: "+this.PosicionPaginacion);
     console.log("-----------------------------------------------------------");
+
+    
   }
+
 }
 
 

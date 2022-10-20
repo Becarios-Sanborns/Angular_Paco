@@ -11,6 +11,8 @@ export class AppComponent {
   title = 'Tarea1';
   Lista :Persona[]=[];
 
+
+  IdActualizado :boolean=false;
   lista$ = new BehaviorSubject({});
 
   getDatos(e:Persona[])
@@ -20,8 +22,5 @@ export class AppComponent {
   }
 
 
-  
  
-
-
 }

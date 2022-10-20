@@ -1,6 +1,6 @@
 import { NgForOf } from '@angular/common';
 import { i18nMetaToJSDoc } from '@angular/compiler/src/render3/view/i18n/meta';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 
 
 
@@ -30,6 +30,8 @@ export class AltasComponent implements OnInit {
   correo: string = "";
   seleccionado:boolean = false;
   
+  Incrementa:boolean =false;
+  
 
   
   personas: Persona[] = [];
@@ -37,12 +39,19 @@ export class AltasComponent implements OnInit {
   constructor() { 
 
   }
+  
 
+  
   @Output() EnvioPadre = new EventEmitter<Persona[]>();
+
+
   ngOnInit(): void {
+    
   }
 
   registrarUsuario() {
+
+    this.Global_Id=this.personas.length;
 
     var alerta = 0;
 
@@ -85,8 +94,10 @@ export class AltasComponent implements OnInit {
       return
   }
   console.log("CAMPOS VALIDADOS");
-    //AUMENTO EL ID SI PASA LA VALIDACION DE DATOS
-    this.Global_Id++;
+   
+    
+      this.Global_Id++;
+    
     //CREO LA NUEVA PERSONA CON LOS CAMPOS DE ALTAS
     var NuevaPersona: Persona = {
       id: this.Global_Id,
@@ -100,8 +111,15 @@ export class AltasComponent implements OnInit {
     //AGREGO LA NUEVA PERSONA A LA LISTA
     this.personas.push(NuevaPersona);
     //ENVIO LA LISTA AL PADRE
+    console.log("---------------->"+this.Global_Id);
     this.EnvioPadre.emit(this.personas);
     
+
+
+    for(var i = 0; i<this.personas.length;i++)
+    {
+      console.log(this.personas[i]);
+    }
   }
 
 }
