@@ -41,18 +41,30 @@ export class ModalEliminarComponent implements OnInit {
     if (this.ListaBusqueda.length > 0) {
       console.log("*************************************************************")
       var posicion = 0;
+      console.log("ID EN ELIMINAR: "+this.IdPersona)
       for (var i = 0; i < this.ListaBusqueda.length; i++)//RECORRO UN FOR PARA ENCONTRAR CUAL ELEMENTO VOY A ELIMINAR EN BUSQUEDA
       {
-        if (this.ListaBusqueda[i].id = this.IdPersona) {
+        
+        if (this.ListaBusqueda[i].id == this.IdPersona) {
           posicion = i; //AQUI OBTENGO LA PERSONA A ELIMINAR
           break;
         }
       }
+       console.log("POSICION: ENCONTRADA: "+posicion);
       this.ListaBusqueda.splice(posicion, 1)//ELIMINO LA PERSONA EN LA DE BUSQUEDA
+/*
+      console.log("ANTES DE RECORRER LOS ID");
+      for(var i = 0 ; i<this.ListaBusqueda.length; i++)
+      {
+        console.log(this.ListaBusqueda[i].id);
+      }
+      console.log("IDs RECORRIDO");
       ////RECORRO LOS ID's DE LAS PERSONAS QUE SE ENCONTRABAN DESPUES DE LA ELIMINADA
       for (var i = posicion; i < this.ListaBusqueda.length; i++) {
+        console.log("POSICION: "+i+" CAMBIO: "+this.ListaBusqueda[i].id+" POR "+ (this.ListaBusqueda[i].id- 1));
         this.ListaBusqueda[i].id = this.ListaBusqueda[i].id - 1;
-      }
+        
+      }*/
       this.ListaBusquedaActualizada.emit(this.ListaBusqueda);
     }
     this.isVisible = false;

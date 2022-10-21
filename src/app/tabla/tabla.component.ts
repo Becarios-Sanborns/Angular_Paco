@@ -145,6 +145,7 @@ export class TablaComponent implements OnInit {
 
     if (this.NombreBuscado == "")// PAGINACION SIN BUSQUEDA
     {
+      console.log("DOY PAGINCION: "+this.tamañoLista);
       //CONDICIONAL PARA DAR SIGUIENTE EN LA PAGINACION
       if (this.PosicionPaginacion < this.tamañoLista) {
         var limite: number = 0;
@@ -201,6 +202,7 @@ export class TablaComponent implements OnInit {
     if(this.NombreBuscado=="")//PAGINACION FINAL SIN BUSCAR
     {
       this.tamañoLista = this.ListaPersonas.length;
+      
       if (this.PosicionPaginacion < this.tamañoLista) {
         this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
         var limite: number = 0;
@@ -430,7 +432,8 @@ export class TablaComponent implements OnInit {
 
   get_ListaActualizada(e: Persona[]) {
     this.ListaPersonas = e;
-    
+    console.log("ESTOY EN TABLA CON TAMAÑO DE "+this.ListaPersonas.length)
+    this.tamañoLista=this.ListaPersonas.length;
       if (this.ListaPersonas.length != 0) {
         this.ActualizarTabla();
       }
@@ -446,7 +449,9 @@ export class TablaComponent implements OnInit {
   {
     this.ListaBusqueda = e;
     if (this.ListaBusqueda.length != 0) {
-      this.ActualizarTabla();
+
+        this.ActualizarTabla();
+         
     }
     else {
       this.ListaPersonasMostrados = [];
@@ -460,6 +465,7 @@ export class TablaComponent implements OnInit {
     var limite = 0;
     this.ListaPersonasMostrados = [];
 
+    console.log("PRIMEROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO:"+this.tamañoLista)
     if(this.NombreBuscado=="")//AAQUI ENTRO SIN BUSCAR
     {
       this.tamañoLista = this.ListaPersonas.length;
@@ -563,7 +569,7 @@ export class TablaComponent implements OnInit {
 
     }
     
-    
+    console.log("TAMAÑO LISTA ANTES DE DAR PAGINACION: "+this.tamañoLista)
 
   }
 
