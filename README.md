@@ -53,4 +53,5 @@ Nota: Tengo un error al momento de cerrar el modal y volver quererlo abrir.
 #3 Creacion del componente modal eliminar, ya puedo eliminar personas de la lista
 #4 Se actualiza la tabla al momento de eliminar.
 #5 Ver videos de servicios para usarlo en el algorito de busqueda.
-#6 Se añadio el funcionamiento de busquedam, mediante el uso de servicios, ademas que se muestra en la tabla los elementos encontrados.
+#6 Se añadio el funcionamiento de busqueda, mediante el uso de servicios, ademas que se muestra en la tabla los elementos encontrados.
+#7 Se hizo la paginaccion cuando hace una busqueda, tambien se hizo la eliminacion cuando se busca. Nota: Me imprime mal la tabla principal, cuando borro uno en busqueda y dejo de buscar.
