@@ -11,7 +11,7 @@ export class AppComponent {
   title = 'Tarea1';
   Lista :Persona[]=[];
 
-
+  IdPersonaEliminiada :number=0;
   IdActualizado :boolean=false;
   lista$ = new BehaviorSubject({});
 
@@ -21,6 +21,9 @@ export class AppComponent {
     this.lista$.next(this.Lista);
   }
 
-
+  getIdPersonaEliminada(e : number)
+  {
+this.IdPersonaEliminiada=e;
+  }
  
 }

@@ -22,7 +22,7 @@ export interface Persona {
 
 export class AltasComponent implements OnInit {
 
- 
+  @Input() IdPersonaEliminada: number = 0; //RECIBO EL ID DE LA PERSONA QUE VOY A ELIMINAR
   Global_Id: number = 0;
   nombres: string = "";
   apellidos: string = "";
@@ -46,11 +46,14 @@ export class AltasComponent implements OnInit {
 
 
   ngOnInit(): void {
-    
   }
 
   registrarUsuario() {
 
+    if(this.IdPersonaEliminada!=0)
+    {
+      this.personas.splice(this.IdPersonaEliminada-1,1)
+    }
     this.Global_Id=this.personas.length;
 
     var alerta = 0;
@@ -115,7 +118,7 @@ export class AltasComponent implements OnInit {
     this.EnvioPadre.emit(this.personas);
     
 
-
+    console.log("LISTA AGREGANDO: ")
     for(var i = 0; i<this.personas.length;i++)
     {
       console.log(this.personas[i]);

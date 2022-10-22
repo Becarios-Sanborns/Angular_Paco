@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter, forwardRef } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import { Observable } from 'rxjs';
 import { Persona } from '../altas/altas.component';
 import { BusquedaService } from '../services/busqueda.service';
@@ -15,6 +15,10 @@ export class TablaComponent implements OnInit {
   PosicionPaginacion: number = 0;
   NumeroFilas: number = 5;
   mainCheckbox: boolean = false;
+
+
+
+  @Output() IdPersonaEliminadaEvent: EventEmitter<number> = new EventEmitter<number>();
 
   @Input() listaPersonas$ = new Observable();
   ListaPersonas: Persona[] = []; //LISTA COMPLETA DE LAS PERSONAS REGISTRADAS
@@ -34,8 +38,10 @@ export class TablaComponent implements OnInit {
   ngOnInit() {
     //SERVICIO MOSTRA TABLA CUANDO BUSCO
     this.busquedaService.nombre$.subscribe(texto => {
+      this.mainCheckbox=false;
       this.contador = 0; //REINICIO EL CONTADOR PARA SABER CUANTOS SELECCIONADOS HAY
       this.NombreBuscado = texto;
+      this.ListaSeleccionados=[];
       //DEBO ELIMINAR LAS SELECCIONES DE LOS CHECKBOX
       for (var i = 0; i < this.ListaPersonas.length; i++) {
         this.ListaPersonas[i].seleccionado = false;
@@ -47,8 +53,7 @@ export class TablaComponent implements OnInit {
         //AQUI BUSCO
         this.ListaPersonasMostrados = [];
         this.PosicionPaginacionBusqueda = 0;
-
-
+        this.contador=0;
         this.ListaBusqueda = [];
         for (var i = 0; i < (this.ListaPersonas.length); i++) {
           var nombres = this.ListaPersonas[i].nombres;
@@ -109,6 +114,7 @@ export class TablaComponent implements OnInit {
       this.ListaPersonas = datos as Persona[];
       this.tamañoLista = this.ListaPersonas.length;
 
+      console.log("AGREGO Y TAMAÑO NUEVO"+this.tamañoLista);
       //AQUI ACTUALIZO LA TABLA MIENTRAS QUE TENGA UNA MENOR A LA QUE PUEDA MOSTRAR
       if (this.tamañoLista <= this.NumeroFilas) {
         this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
@@ -132,10 +138,6 @@ export class TablaComponent implements OnInit {
       } console.log("Tamaño Lista: " + this.tamañoLista);
       this.mainCheckbox = false;
     })
-
-
-
-
   }
 
 
@@ -334,7 +336,7 @@ export class TablaComponent implements OnInit {
     }
   }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////
   //Evento para actualizar el estado de los checkbox
   contador: number = 0; //Variable que me ayudara a saber cuantos estan seleccionados
   onChangePersona($event: any) {
@@ -346,25 +348,39 @@ export class TablaComponent implements OnInit {
 
         if (d.id == id) {
           if (isChecked == true) {
+            console.log("ENTRO");
             this.contador++;
-            if (this.contador == this.tamañoLista) {
-              this.mainCheckbox = true;
-            }
+            console.log("TAMAÑO LISTA: "+this.tamañoLista);
+              console.log("contador :"+this.contador);
+            
           } else {
             this.contador--;
             this.mainCheckbox = false;
           }
+          if (this.contador == this.tamañoLista) {
+              
+            this.mainCheckbox = true;
+          }
           d.seleccionado = isChecked;
           return d;
         }
-  
         if (id == -1) {
-          d.seleccionado = this.mainCheckbox;
-  
+          if(isChecked==true)
+          {
+            this.contador=0;
+             d.seleccionado = true;
+             this.contador++;
+          }
+          else
+          {
+            d.seleccionado = false;
+           // this.contador--;
+          }
           return d;
         }
         return d;
       });
+      console.log("TAMAÑO LISTA: "+this.tamañoLista);
     }
     else//EVENNTO CHECK CON BUSQUEDA
     {
@@ -397,13 +413,15 @@ export class TablaComponent implements OnInit {
 
   isVisibleSeleccionados: boolean = false; //METODO BOOLEANO QUE FUNCIONARA PARA MOSTRAR CUALQUIERA DE LOS 2 MODALES
   //METODO PARA MOSTAR EL MODAL DE LAS PERSONAS SELECCIONADAS: 
-  mostrarSeleccionados() {
-    if (this.contador > 0) {
-      console.log("CONTADOR: " + this.contador);
+  mostrarSeleccionados() {this.ListaSeleccionados = [];
       this.ListaSeleccionados = this.ListaPersonas.filter((Persona) => Persona.seleccionado == true)
+    if (this.ListaSeleccionados.length > 0) {
+      console.log("CONTADOR: " + this.contador);
+      console.log("TAMAÑO LISTA PERSONAS: "+this.ListaPersonas.length);
+      
       this.isVisibleSeleccionados = !this.isVisibleSeleccionados;
-      console.log(this.isVisibleSeleccionados)
-      console.log(this.ListaSeleccionados)
+      //console.log(this.isVisibleSeleccionados)
+     // console.log(this.ListaSeleccionados)
 
     }
     else {
@@ -436,13 +454,22 @@ export class TablaComponent implements OnInit {
     this.tamañoLista=this.ListaPersonas.length;
       if (this.ListaPersonas.length != 0) {
         this.ActualizarTabla();
+        ///this.ListaSeleccionados = this.ListaSeleccionados.filter((item) => item.id !== this.IdPersona)
+
+
+        for(var i = 0; i<this.ListaSeleccionados.length;i++)
+        {
+          console.log(this.ListaSeleccionados[i]);
+        }
+        console.log("ELIMINACION: "+this.ListaSeleccionados.length)
+      this.contador--;
       }
       else {
         this.ListaPersonasMostrados = [];
         this.PosicionPaginacion--;
       }
-    
-   
+      console.log("ELIMINO: "+this.contador);
+      this.IdPersonaEliminadaEvent.emit(this.IdPersona);
   }
 
   get_ListaBusquedaActualizada(e:Persona[])
@@ -451,7 +478,8 @@ export class TablaComponent implements OnInit {
     if (this.ListaBusqueda.length != 0) {
 
         this.ActualizarTabla();
-         
+        this.ListaSeleccionados = this.ListaSeleccionados.filter((item) => item.id !== this.IdPersona)
+        this.contador=this.ListaSeleccionados.length;
     }
     else {
       this.ListaPersonasMostrados = [];
@@ -465,26 +493,18 @@ export class TablaComponent implements OnInit {
     var limite = 0;
     this.ListaPersonasMostrados = [];
 
-    console.log("PRIMEROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO:"+this.tamañoLista)
     if(this.NombreBuscado=="")//AAQUI ENTRO SIN BUSCAR
     {
       this.tamañoLista = this.ListaPersonas.length;
-    console.log("111111111111111111111111111111111111111111111111111111111111111")
-    console.log("POSICION PAGINACION: " + this.PosicionPaginacion);
-    console.log("TAMAÑO LISTA: " + this.tamañoLista);
     if (this.PosicionPaginacion < this.ListaPersonas.length) {
       Inicio = this.PosicionPaginacion - this.NumeroFilas + 1;
 
       limite = this.PosicionPaginacion
-      console.log("LIMITE: " + limite);
-      console.log("INICIO: " + Inicio);
       for (var i = Inicio; i <= limite; i++) {
         this.ListaPersonasMostrados.push(this.ListaPersonas[i - 1]);
       }
     } else {
-      console.log("22222222222222222222222222222222222222222222222222222222222222");
       this.PosicionPaginacion = this.ListaPersonas.length;
-      console.log("POSICION: " + this.PosicionPaginacion)
       limite = this.PosicionPaginacion % this.NumeroFilas;
       Inicio = this.PosicionPaginacion - limite + 1;
       if (limite == 0) //SI EL RESIDUO ES IGUAL A 0 SIGNIFICA QUE MOSTRARE TODOS LOS ELEMENTOS
@@ -506,23 +526,15 @@ export class TablaComponent implements OnInit {
       }
       else {//AQUI ENTRO SI POSICION <= NUMERO FILAS
       }
-      console.log("INICIO VALE: " + Inicio);
-      console.log("LIMITE VALE: " + limite);
       for (var i = Inicio; i <= limite; i++) {
         this.ListaPersonasMostrados.push(this.ListaPersonas[i - 1]);
       }
       this.PosicionPaginacion = this.ListaPersonas.length;
     }
-    console.log("POSICION FINAL: " + this.PosicionPaginacion);
-    console.log("-----------------------------------------------------------");
-
     }
     else //AQUI ENTRO BUSCANDO
     {
       var tamLista  = this.ListaBusqueda.length;
-    console.log("111111111111111111111111111111111111111111111111111111111111111")
-    console.log("POSICION PAGINACION: " + this.PosicionPaginacionBusqueda);
-    console.log("TAMAÑO LISTA: " + tamLista);
     if (this.PosicionPaginacionBusqueda < this.ListaBusqueda.length) {
       Inicio = this.PosicionPaginacionBusqueda - this.NumeroFilas + 1;
 
@@ -533,9 +545,7 @@ export class TablaComponent implements OnInit {
         this.ListaPersonasMostrados.push(this.ListaBusqueda[i - 1]);
       }
     } else {
-      console.log("22222222222222222222222222222222222222222222222222222222222222");
       this.PosicionPaginacionBusqueda = this.ListaBusqueda.length;
-      console.log("POSICION: " + this.PosicionPaginacionBusqueda)
       limite = this.PosicionPaginacionBusqueda % this.NumeroFilas;
       Inicio = this.PosicionPaginacionBusqueda - limite + 1;
       if (limite == 0) //SI EL RESIDUO ES IGUAL A 0 SIGNIFICA QUE MOSTRARE TODOS LOS ELEMENTOS
@@ -545,7 +555,6 @@ export class TablaComponent implements OnInit {
       }
       if (this.PosicionPaginacionBusqueda > this.NumeroFilas) {// AQUI ENTRO SI POSICION >NUMERO FILAS
         limite = this.ListaBusqueda.length;
-        console.log("ENTREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
         this.PosicionPaginacionBusqueda = this.ListaBusqueda.length;
         if (tamLista <= this.NumeroFilas) {
           Inicio = 1;
@@ -557,8 +566,7 @@ export class TablaComponent implements OnInit {
       }
       else {//AQUI ENTRO SI POSICION <= NUMERO FILAS
       }
-      console.log("INICIO VALE: " + Inicio);
-      console.log("LIMITE VALE: " + limite);
+
       for (var i = Inicio; i <= limite; i++) {
         this.ListaPersonasMostrados.push(this.ListaBusqueda[i - 1]);
       }
@@ -574,7 +582,3 @@ export class TablaComponent implements OnInit {
   }
 
 }
-
-
-
-
