@@ -56,3 +56,5 @@ Nota: Tengo un error al momento de cerrar el modal y volver quererlo abrir.
 #6 Se añadio el funcionamiento de busqueda, mediante el uso de servicios, ademas que se muestra en la tabla los elementos encontrados.
 #7 Se hizo la paginaccion cuando hace una busqueda, tambien se hizo la eliminacion cuando se busca. Nota: Me imprime mal la tabla principal, cuando borro uno en busqueda y dejo de buscar.
 #8 Se soluciono el error al eliminar en busqueda y se termino el proyecto.
+#9 Reunion sobre la entrega del proyecto, hubo un error encontrado en la eliminacion y despues agregar.
+#10 Se soluciono el error anteriormente mencionado.
