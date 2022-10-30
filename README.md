@@ -58,3 +58,11 @@ Nota: Tengo un error al momento de cerrar el modal y volver quererlo abrir.
 #8 Se soluciono el error al eliminar en busqueda y se termino el proyecto.
 #9 Reunion sobre la entrega del proyecto, hubo un error encontrado en la eliminacion y despues agregar.
 #10 Se soluciono el error anteriormente mencionado.
+
+#Semana 8 (24/10/2022  - 28/10/2022 ) 180 horas
+#1 Solucionando error que se encontro en la revision, al momento de eliminar en busqueda y regresar a la tabla principal, se modificaban los ID.
+#2 Junta en meet para mostrar los avances del proyecto, ademas de continuar con la solucion de los ID al momento de eliminar.
+#3 Se soluciono error error de los ID, pero se genero otro. Al momento de eliminar de busqueda, volver a la tabla principal y agregar otra persona, no se mostraba la inforamcion correcta, ademas de modificar completamente el arreglo principal.
+#4 Se intento solucionar el error de agregar una persona en la tabla principal, despues de haber eliminado una persona en la busqueda.
+#5 Junta en meet para mostrar los avances del proyecto, se encontro otro error en el cual el checkbox principal no se marcaba cuando debia, esto sucedia cuando se eliminaban personas.
+#6 Se solucionaron todos los errores, se realiazaron multiples pruebas para verificar que no tenga otro error.
