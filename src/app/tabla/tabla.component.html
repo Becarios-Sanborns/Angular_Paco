@@ -54,7 +54,7 @@
         <input class="botones" type="button" (click)="paginacionFinal()" value=">>">
     </section>
     <app-modal-mostrar (isVisibleEvent)="get_isVisibleSeleccionados($event)" *ngIf="isVisibleSeleccionados" [ListaModal]="ListaSeleccionados" [isVisible]="isVisibleSeleccionados"></app-modal-mostrar>
-    <app-modal-eliminar (isVisibleEvent)="get_isVisibleEliminar($event)" (ListaActualizada)="get_ListaActualizada($event)"  (ListaBusquedaActualizada)="get_ListaBusquedaActualizada($event)" *ngIf="isVisibleEliminar" [ListaPersonas]="ListaPersonas" [isVisible]="isVisibleEliminar" [IdPersona]="IdPersona" [ListaBusqueda]="ListaBusqueda"></app-modal-eliminar>
+    <app-modal-eliminar (isVisibleEvent)="get_isVisibleEliminar($event)"  *ngIf="isVisibleEliminar" [ListaPersonas]="ListaPersonas" [isVisible]="isVisibleEliminar" [IdPersona]="IdPersonaEliminada" [ListaBusqueda]="ListaBusqueda"></app-modal-eliminar>
 </section>
 
 

@@ -1,6 +1,8 @@
 import { NgForOf } from '@angular/common';
 import { i18nMetaToJSDoc } from '@angular/compiler/src/render3/view/i18n/meta';
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ComponentFactoryResolver } from '@angular/core';
+import { DecrementarIdService } from '../services/decrementar-id.service';
+import { EnvioPersonaATablaService } from '../services/envio-persona-a-tabla.service';
 
 
 
@@ -34,30 +36,32 @@ export class AltasComponent implements OnInit {
   
 
   
-  personas: Persona[] = [];
 
-  constructor() { 
+
+  constructor(
+    private DecrementarId: DecrementarIdService,
+    private EnviarPersona: EnvioPersonaATablaService) { 
 
   }
   
 
   
-  @Output() EnvioPadre = new EventEmitter<Persona[]>();
+ // @Output() EnvioPadre = new EventEmitter<Persona[]>();
 
 
   ngOnInit(): void {
+    this.DecrementarId.Id$.subscribe(Id=>{
+     
+     
+    this.Global_Id--;
+    
+    });  
   }
 
-  registrarUsuario() {
 
-    if(this.IdPersonaEliminada!=0)
-    {
-      this.personas.splice(this.IdPersonaEliminada-1,1)
-    }
-    this.Global_Id=this.personas.length;
 
+  registrarUsuario() { 
     var alerta = 0;
-
     //VALIDACION DE LOS DATOS
     if (this.nombres == "") {
       alert("Llena el  campo de nombres");
@@ -93,14 +97,10 @@ export class AltasComponent implements OnInit {
       }
   }
   if (alerta > 0) {
-    console.log("Campos no aceptados");
       return
   }
-  console.log("CAMPOS VALIDADOS");
-   
-    
-      this.Global_Id++;
-    
+
+    this.Global_Id++;  
     //CREO LA NUEVA PERSONA CON LOS CAMPOS DE ALTAS
     var NuevaPersona: Persona = {
       id: this.Global_Id,
@@ -111,18 +111,10 @@ export class AltasComponent implements OnInit {
       seleccionado:this.seleccionado
     }
 
-    //AGREGO LA NUEVA PERSONA A LA LISTA
-    this.personas.push(NuevaPersona);
     //ENVIO LA LISTA AL PADRE
-    console.log("---------------->"+this.Global_Id);
-    this.EnvioPadre.emit(this.personas);
-    
-
-    console.log("LISTA AGREGANDO: ")
-    for(var i = 0; i<this.personas.length;i++)
-    {
-      console.log(this.personas[i]);
-    }
+    this.EnviarPersona.Persona$.emit(NuevaPersona);
+    console.log("------------------------------");
+ 
   }
 
 }

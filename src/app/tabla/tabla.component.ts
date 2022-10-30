@@ -1,7 +1,11 @@
-import { Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Persona } from '../altas/altas.component';
+import { ActualizarTablaBusquedaServiceService } from '../services/actualizar-tabla-busqueda-service.service';
+import { ActualizarTablaService } from '../services/actualizar-tabla.service';
 import { BusquedaService } from '../services/busqueda.service';
+import { DecrementarIdService } from '../services/decrementar-id.service';
+import { EnvioPersonaATablaService } from '../services/envio-persona-a-tabla.service';
 
 
 
@@ -17,9 +21,6 @@ export class TablaComponent implements OnInit {
   mainCheckbox: boolean = false;
 
 
-
-  @Output() IdPersonaEliminadaEvent: EventEmitter<number> = new EventEmitter<number>();
-
   @Input() listaPersonas$ = new Observable();
   ListaPersonas: Persona[] = []; //LISTA COMPLETA DE LAS PERSONAS REGISTRADAS
   ListaPersonasMostrados: Persona[] = []; //LISTA DE LAS PERSONA QUE VAN A SER MOSTRADAS POR LA PAGINACION
@@ -32,99 +33,49 @@ export class TablaComponent implements OnInit {
   NombreBuscado: string = ""; //NOMBRE DE PERSONA BUSCADA
   ListaBusqueda: Persona[] = [];
   PosicionPaginacionBusqueda: number = 0;
+  auxTamañoLista: number = 0;
+  auxTamañoListaBusqueda: number = 0;
 
-  constructor(private busquedaService: BusquedaService) { }
+  constructor(
+    private busquedaService: BusquedaService,
+    private DecrementarId: DecrementarIdService,
+    private TablaActualizada: ActualizarTablaService,
+    private TablaBusqueda: ActualizarTablaBusquedaServiceService,
+    private AñadoPersona: EnvioPersonaATablaService) { }
+
 
   ngOnInit() {
-    //SERVICIO MOSTRA TABLA CUANDO BUSCO
-    this.busquedaService.nombre$.subscribe(texto => {
-      this.mainCheckbox=false;
-      this.contador = 0; //REINICIO EL CONTADOR PARA SABER CUANTOS SELECCIONADOS HAY
-      this.NombreBuscado = texto;
-      this.ListaSeleccionados=[];
-      //DEBO ELIMINAR LAS SELECCIONES DE LOS CHECKBOX
+    //SUSCRIPCION PARA AÑADIR PERSONAS
+    this.AñadoPersona.Persona$.subscribe(PersonaNueva => {
+
       for (var i = 0; i < this.ListaPersonas.length; i++) {
-        this.ListaPersonas[i].seleccionado = false;
+        console.log(this.ListaPersonas[i]);
       }
+      console.log("--------------------");
+      this.ListaPersonas.push(PersonaNueva);
+      this.tamañoLista = this.ListaPersonas.length;
+      for (var i = 0; i < this.ListaPersonas.length; i++) {
+        console.log(this.ListaPersonas[i]);
+      }
+      console.log("LISTA ANTES:");
+      console.log("TAMAÑO LISTA: " + this.tamañoLista);
 
-
-
-      if (this.NombreBuscado != "") {
-        //AQUI BUSCO
-        this.ListaPersonasMostrados = [];
-        this.PosicionPaginacionBusqueda = 0;
-        this.contador=0;
-        this.ListaBusqueda = [];
-        for (var i = 0; i < (this.ListaPersonas.length); i++) {
-          var nombres = this.ListaPersonas[i].nombres;
-          if (nombres.includes(this.NombreBuscado) == true) {
-            //  console.log("Encontre similitud");
-            var personaEncontrada = this.ListaPersonas[i];
-            this.ListaBusqueda.push(personaEncontrada); //AQUI AÑADO LAS SIMILITUDES A LA LISTA DE BUSQUEDA
+      //AQUI ACTUALIZO LA TABLA MIENTRAS QUE TENGA UNA MENOR A LA QUE PUEDA MOSTRAR
+      if (this.PosicionPaginacion <= this.NumeroFilas) {
+        this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
+        if (this.tamañoLista != undefined) {
+          if (this.PosicionPaginacion < this.NumeroFilas) {
+            this.PosicionPaginacion++;
           }
         }
-        //IMPRIMMO LA LISTA DE BUSQUEDA
-        console.log("RESULTDOS BUSQUEDA");
-        console.log("TAMAÑO LISTA BUSQUEDA: " + this.ListaBusqueda.length);
-        for (var i = 0; i < this.ListaBusqueda.length; i++) {
-          console.log(this.ListaBusqueda[i]);
+        if (this.tamañoLista != undefined) {
+          for (var i = 0; i <= this.PosicionPaginacion - 1; i++) {
+            this.ListaPersonasMostrados.push(this.ListaPersonas[i]);
+          }
         }
-
-        if (this.ListaBusqueda.length >= this.NumeroFilas) {
-          console.log("111111111111111111111111111");
-          this.PosicionPaginacionBusqueda = this.NumeroFilas;
-
-        }
-        else {
-          //AQUI ENTRO SI ES MENOR DEL NUMERO DE FILAS
-          console.log("22222222222222222222222222222222222");
-          this.PosicionPaginacionBusqueda = this.ListaBusqueda.length % this.NumeroFilas;
-          console.log("POSICION LISTA: " + this.PosicionPaginacionBusqueda);
-        } console.log("TAMAÑO MOSTRADOS" + this.ListaPersonasMostrados.length)
-        for (var i = 1; i <= this.PosicionPaginacionBusqueda; i++) {
-          this.ListaPersonasMostrados.push(this.ListaBusqueda[i - 1]);
-
-        }
-
-
-      } else {
-
-        //AAQUI ENTRO CUANDO NO ESTOY BUSCANDO
-        this.PosicionPaginacion = 0;
-        this.ListaPersonasMostrados = [];
-
-
-        if (this.ListaPersonas.length >= this.NumeroFilas) {
-          this.PosicionPaginacion = this.NumeroFilas;
-        }
-        else {
-          this.PosicionPaginacion = this.ListaPersonas.length % this.NumeroFilas;
-        }
-        for (var i = 1; i <= this.PosicionPaginacion; i++) {
-          this.ListaPersonasMostrados.push(this.ListaPersonas[i - 1]);
-        }
-
-        //AQUI CUANDO DEJO DE BUSCAR
-
-      }
-    });
-
-    //SERVICIO PARA ACTUALIZAR LA TABLA 
-    this.listaPersonas$.subscribe((datos) => {
-      this.ListaPersonas = datos as Persona[];
-      this.tamañoLista = this.ListaPersonas.length;
-
-      console.log("AGREGO Y TAMAÑO NUEVO"+this.tamañoLista);
-      //AQUI ACTUALIZO LA TABLA MIENTRAS QUE TENGA UNA MENOR A LA QUE PUEDA MOSTRAR
-      if (this.tamañoLista <= this.NumeroFilas) {
-        this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
-        this.PosicionPaginacion++;
-        for (var i = 0; i < this.tamañoLista; i++) {
-          this.ListaPersonasMostrados.push(this.ListaPersonas[i]);
-        }
-        console.log("Posicion: " + this.PosicionPaginacion);
       }
       else {//AQUI ACTUALIZO LA TABLA MIENTRAS QUE TENGA UNA MAYOR A LA QUE PUEDA MOSTRAR
+        console.log("PAGINACION POS" + this.PosicionPaginacion);
         if (this.PosicionPaginacion % this.NumeroFilas != 0 || this.PosicionPaginacion == this.tamañoLista) {
           this.ListaPersonasMostrados = [];
 
@@ -132,22 +83,180 @@ export class TablaComponent implements OnInit {
             this.ListaPersonasMostrados.push(this.ListaPersonas[i - 1]);
           }
           this.PosicionPaginacion++;
-          console.log("Posicion: " + this.PosicionPaginacion);
-
         }
-      } console.log("Tamaño Lista: " + this.tamañoLista);
+      }
       this.mainCheckbox = false;
-    })
+
+    });
+    //SERVICIO QUE ACTUALIZA LA TABLA DE BUSQUEDA
+    this.TablaBusqueda.TablaBusquedaActualizada$.subscribe(Lista => {
+      for (var i = 0; i < this.ListaSeleccionados.length; i++) {
+        if (this.ListaSeleccionados[i].id == this.IdPersonaEliminada) {
+          this.contador--;
+          console.log("contador: " + this.contador);
+          break;
+        }
+      }
+      this.ListaSeleccionados.filter(Seleccionado => Seleccionado.id != this.IdPersonaEliminada);
+
+      this.ListaBusqueda = [];
+      for (var i = 0; i < Lista.length; i++) {
+        this.ListaBusqueda.push(Lista[i]);
+      }
+      console.log("PASA POR AQUI")
+      if (this.ListaBusqueda.length != 0) {
+        this.ActualizarTabla();
+
+        this.ListaSeleccionados = this.ListaSeleccionados.filter((item) => item.id !== this.IdPersonaEliminada)
+        this.contador = this.ListaSeleccionados.length;
+      }
+      else {
+        this.ListaPersonasMostrados = [];
+        this.PosicionPaginacionBusqueda--;
+        this.PosicionPaginacion = 0;
+      }
+      if (this.ListaBusqueda.length == this.contador && this.ListaBusqueda.length != 0) {
+
+        this.mainCheckbox = true;
+
+
+      }
+
+    });
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //SERVICIO ACTUALIZAR TABLA CUANDO SE ELIMINA
+    this.TablaActualizada.TablaActualizada$.subscribe(Lista => {
+
+      for (var i = 0; i < this.ListaSeleccionados.length; i++) {
+        if (this.ListaSeleccionados[i].id == this.IdPersonaEliminada) {
+          this.contador--;
+          console.log("contador: " + this.contador);
+          break;
+        }
+      }
+      this.ListaSeleccionados.filter(Seleccionado => Seleccionado.id != this.IdPersonaEliminada);
+      console.log("IMPRIMO SELECCIONADOS")
+      for (var i = 0; i < this.ListaSeleccionados.length; i++) {
+        console.log(this.ListaSeleccionados[i]);
+      }
+
+      this.auxTamañoLista = this.tamañoLista;
+      this.ListaPersonas = [];
+      this.tamañoLista = Lista.length;
+      console.log("TAMAÑO LISTA: " + this.tamañoLista);
+
+      for (var i = 0; i < Lista.length; i++) {
+        this.ListaPersonas.push(Lista[i]);
+      }
+      if (this.ListaPersonas.length != 0) {
+        this.DecrementarId.Id$.emit(this.IdPersonaEliminada);
+        this.ActualizarTabla();
+      }
+      else {
+        this.DecrementarId.Id$.emit(this.IdPersonaEliminada);
+        this.ListaPersonasMostrados = [];
+        this.PosicionPaginacion = 0;
+        this.tamañoLista = 0;
+      }
+
+      console.log("TAMAÑO LISTA: " + this.tamañoLista)
+      console.log("CONTADOR: " + this.contador);
+      if (this.tamañoLista == this.contador) {
+        if (this.tamañoLista != 0) {
+          this.mainCheckbox = true;
+        }
+
+      }
+      console.log("MANDO EL ID: " + this.IdPersonaEliminada);
+    });
+    //////////////////////////////////////////////////////////////
+
+
+    //SERVICIO MOSTRA TABLA CUANDO BUSCO
+    this.busquedaService.nombre$.subscribe(texto => {
+      this.NombreBuscado = texto;
+      this.BuscarPersona();
+    });
+
+
+
+  }
+
+  //METODOS
+  BuscarPersona() {
+    this.mainCheckbox = false;
+    this.contador = 0; //REINICIO EL CONTADOR PARA SABER CUANTOS SELECCIONADOS HAY
+    this.ListaSeleccionados = [];//CADA VEZ QUE SE BUSCA SE LIMPIAN LOS CHECKBOX
+    var CopiaListaPersonas = this.ListaPersonas.slice();
+
+    this.ListaPersonas.map(Persona => { return Persona.seleccionado = false; });
+
+    if (this.NombreBuscado.length != 0) {
+
+      /************************************************************************* */
+      this.ListaPersonasMostrados = [];
+      this.PosicionPaginacionBusqueda = 0;
+      this.contador = 0;
+      this.ListaBusqueda = [];
+      for (var i = 0; i < (CopiaListaPersonas.length); i++) {
+
+        var nombres = this.ListaPersonas[i].nombres;
+        if (nombres.includes(this.NombreBuscado) == true) {
+          this.ListaBusqueda.push(CopiaListaPersonas[i]); //AQUI AÑADO LAS SIMILITUDES A LA LISTA DE BUSQUEDA
+        }
+      }
+      //IMPRIMMO LA LISTA DE BUSQUEDA
+      for (var i = 0; i < this.ListaBusqueda.length; i++) {
+        console.log(this.ListaBusqueda[i]);
+      }
+
+      if (this.ListaBusqueda.length >= this.NumeroFilas) {
+        this.PosicionPaginacionBusqueda = this.NumeroFilas;
+      }
+      else {
+        //AQUI ENTRO SI ES MENOR DEL NUMERO DE FILAS
+        this.PosicionPaginacionBusqueda = this.ListaBusqueda.length % this.NumeroFilas;
+
+      }
+      for (var i = 1; i <= this.PosicionPaginacionBusqueda; i++) {
+        this.ListaPersonasMostrados.push(this.ListaBusqueda[i - 1]);
+      }
+
+      /************************************************************************* */
+
+
+    } else {/////////////////////////////////////////////////////////////////////////////
+      //AAQUI ENTRO CUANDO NO ESTOY BUSCANDO
+      this.ListaBusqueda = [];
+      this.PosicionPaginacion = 0;
+      this.ListaPersonasMostrados = [];
+      console.log("YA NO ESTOY BUSCANDO")
+      if (CopiaListaPersonas.length >= this.NumeroFilas) {
+        this.PosicionPaginacion = this.NumeroFilas;
+      }
+      else {
+        this.PosicionPaginacion = CopiaListaPersonas.length % this.NumeroFilas;
+      }
+      for (var i = 1; i <= this.PosicionPaginacion; i++) {
+        this.ListaPersonasMostrados.push(CopiaListaPersonas[i - 1]);
+      }
+
+      //AQUI CUANDO DEJO DE BUSCAR
+      for (var i = 0; i < this.ListaPersonas.length; i++) {
+        console.log(this.ListaPersonas[i]);
+      }
+      console.log("*******************************")
+    }
   }
 
 
   //////////////////////////////////////////////////////////////////////////////////////
   //FUNCIONA LA PAGINACION SIN BUSCAR LAS PERSONAS
   paginacionSiguiente() {
-
     if (this.NombreBuscado == "")// PAGINACION SIN BUSQUEDA
     {
-      console.log("DOY PAGINCION: "+this.tamañoLista);
+      console.log("DOY PAGINCION: " + this.tamañoLista);
       //CONDICIONAL PARA DAR SIGUIENTE EN LA PAGINACION
       if (this.PosicionPaginacion < this.tamañoLista) {
         var limite: number = 0;
@@ -174,37 +283,37 @@ export class TablaComponent implements OnInit {
     else //PAGINACION CON BUSQUEDA
     {
       //CONDICIONAL PARA DAR SIGUIENTE EN LA PAGINACION
-    if (this.PosicionPaginacionBusqueda < this.ListaBusqueda.length) {
-      var limite: number = 0;
-      limite = this.ListaBusqueda.length;
+      if (this.PosicionPaginacionBusqueda < this.ListaBusqueda.length) {
+        var limite: number = 0;
+        limite = this.ListaBusqueda.length;
 
-      //CODICIONAL PARA SABER CUANTOAS PERSONAS MOSTRARE
-      if (this.PosicionPaginacionBusqueda + this.NumeroFilas <=  this.ListaBusqueda.length) {
-        limite = this.NumeroFilas;
+        //CODICIONAL PARA SABER CUANTOAS PERSONAS MOSTRARE
+        if (this.PosicionPaginacionBusqueda + this.NumeroFilas <= this.ListaBusqueda.length) {
+          limite = this.NumeroFilas;
+        } else {
+          limite = limite % this.NumeroFilas;
+        }
+
+        this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
+        limite = limite + this.PosicionPaginacionBusqueda;
+        for (var i = this.PosicionPaginacionBusqueda + 1; i <= limite; i++) {
+          this.ListaPersonasMostrados.push(this.ListaBusqueda[i - 1]);
+          this.PosicionPaginacionBusqueda++;
+        }
+        console.log("POSICION: " + this.PosicionPaginacionBusqueda);
       } else {
-        limite = limite % this.NumeroFilas;
+        console.log("NO PUEDES DAR SIGUIENTE EN BUSQUEDA");
       }
-
-      this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
-      limite = limite + this.PosicionPaginacionBusqueda;
-      for (var i = this.PosicionPaginacionBusqueda + 1; i <= limite; i++) {
-        this.ListaPersonasMostrados.push(this.ListaBusqueda[i - 1]);
-        this.PosicionPaginacionBusqueda++;
-      }
-      console.log("POSICION: " + this.PosicionPaginacionBusqueda);
-    } else {
-      console.log("NO PUEDES DAR SIGUIENTE EN BUSQUEDA");
-    }
     }
 
   }
 
   //FUNCIONA PAGINACION FINAL SIN BUSCAR  LAS PERSONAS
   paginacionFinal() {
-    if(this.NombreBuscado=="")//PAGINACION FINAL SIN BUSCAR
+    if (this.NombreBuscado == "")//PAGINACION FINAL SIN BUSCAR
     {
       this.tamañoLista = this.ListaPersonas.length;
-      
+
       if (this.PosicionPaginacion < this.tamañoLista) {
         this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
         var limite: number = 0;
@@ -214,9 +323,9 @@ export class TablaComponent implements OnInit {
         }
         for (var i = this.tamañoLista - limite; i < this.tamañoLista; i++) {
           this.ListaPersonasMostrados.push(this.ListaPersonas[i]);
-  
+
         }
-  
+
       } else {
         console.log("YA ESTAS EN EL FINAL");
       }
@@ -235,7 +344,7 @@ export class TablaComponent implements OnInit {
         }
         for (var i = this.tamañoLista - limite; i < this.tamañoLista; i++) {
           this.ListaPersonasMostrados.push(this.ListaBusqueda[i]);
-  
+
         }
       } else {
         console.log("YA ESTAS EN EL FINAL");
@@ -247,21 +356,21 @@ export class TablaComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////
   paginacionAnterior() {
-    if(this.NombreBuscado=="")//PAGINACION ANTERIOR SIN BUSCAR
+    if (this.NombreBuscado == "")//PAGINACION ANTERIOR SIN BUSCAR
     {
       if (this.PosicionPaginacion > this.NumeroFilas) {
         console.log("POSICION: " + this.PosicionPaginacion);
         this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
         var limite: number = 0;
         limite = this.PosicionPaginacion % this.NumeroFilas;
-  
+
         if (limite == 0) {
           limite = this.NumeroFilas;
-  
+
         }
         this.PosicionPaginacion = this.PosicionPaginacion - this.NumeroFilas - limite + 1;
         limite = this.PosicionPaginacion + this.NumeroFilas;
-  
+
         console.log(this.PosicionPaginacion)
         for (var i = this.PosicionPaginacion; i < limite; i++) {
           this.ListaPersonasMostrados.push(this.ListaPersonas[i - 1]);
@@ -270,8 +379,7 @@ export class TablaComponent implements OnInit {
         }
         this.PosicionPaginacion--;
         console.log("POSICION: " + this.PosicionPaginacion);
-      }else
-      {
+      } else {
         console.log("NO PUEDES DAR ANTERIOR");
       }
     }
@@ -282,13 +390,13 @@ export class TablaComponent implements OnInit {
         this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
         var limite: number = 0;
         limite = this.PosicionPaginacionBusqueda % this.NumeroFilas;
-  
+
         if (limite == 0) {
           limite = this.NumeroFilas;
         }
         this.PosicionPaginacionBusqueda = this.PosicionPaginacionBusqueda - this.NumeroFilas - limite + 1;
         limite = this.PosicionPaginacionBusqueda + this.NumeroFilas;
-  
+
         console.log(this.PosicionPaginacionBusqueda)
         for (var i = this.PosicionPaginacionBusqueda; i < limite; i++) {
           this.ListaPersonasMostrados.push(this.ListaBusqueda[i - 1]);
@@ -297,21 +405,19 @@ export class TablaComponent implements OnInit {
         }
         this.PosicionPaginacionBusqueda--;
         console.log("POSICION: " + this.PosicionPaginacionBusqueda);
-      }else
-      {
+      } else {
         console.log("NO PUEDES DAR ANTERIOR");
       }
     }
-    
+
   }
 
 
   paginacionInicial() {
-    if(this.NombreBuscado==""){//PAGINACION INICIAL SIN BUSQUEDA
+    if (this.NombreBuscado == "") {//PAGINACION INICIAL SIN BUSQUEDA
       if (this.PosicionPaginacion > this.NumeroFilas) {
         this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
-        var limite: number = 0;
-  
+
         for (var i = 0; i < this.NumeroFilas; i++) {
           this.ListaPersonasMostrados.push(this.ListaPersonas[i]);
         }
@@ -324,8 +430,7 @@ export class TablaComponent implements OnInit {
     {
       if (this.PosicionPaginacionBusqueda > this.NumeroFilas) {
         this.ListaPersonasMostrados = []; //LIMPIO EL ARREGLO DE MOSTRADOS PARA PROXIMOS DATOS MOSTRADOS
-        var limite: number = 0;
-  
+
         for (var i = 0; i < this.NumeroFilas; i++) {
           this.ListaPersonasMostrados.push(this.ListaBusqueda[i]);
         }
@@ -336,13 +441,13 @@ export class TablaComponent implements OnInit {
     }
   }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////
   //Evento para actualizar el estado de los checkbox
   contador: number = 0; //Variable que me ayudara a saber cuantos estan seleccionados
   onChangePersona($event: any) {
     const id = $event.target.value;
     const isChecked = $event.target.checked;
-    if(this.NombreBuscado=="") //EVENTO CHECK SIN BUSQUEDA
+    if (this.NombreBuscado == "") //EVENTO CHECK SIN BUSQUEDA
     {
       this.ListaPersonas = this.ListaPersonas.map((d) => {
 
@@ -350,37 +455,50 @@ export class TablaComponent implements OnInit {
           if (isChecked == true) {
             console.log("ENTRO");
             this.contador++;
-            console.log("TAMAÑO LISTA: "+this.tamañoLista);
-              console.log("contador :"+this.contador);
-            
+            this.ListaSeleccionados.push(d);
+            console.log("contador :" + this.contador);
+
           } else {
             this.contador--;
+            console.log("CONTADOR: " + this.contador);
+            this.ListaSeleccionados = this.ListaSeleccionados.filter((persona) => persona.id != d.id)
+
             this.mainCheckbox = false;
           }
-          if (this.contador == this.tamañoLista) {
-              
-            this.mainCheckbox = true;
+          if (this.NombreBuscado == "") {
+            if (this.contador == this.tamañoLista) {
+
+              this.mainCheckbox = true;
+            }
           }
+          else {
+            if (this.contador == this.ListaBusqueda.length) {
+
+              this.mainCheckbox = true;
+            }
+          }
+
           d.seleccionado = isChecked;
           return d;
         }
         if (id == -1) {
-          if(isChecked==true)
-          {
-            this.contador=0;
-             d.seleccionado = true;
-             this.contador++;
+          if (isChecked == true) {
+            console.log("11111111")
+
+            this.contador = 0;
+            d.seleccionado = true;
+            this.contador++;
           }
-          else
-          {
+          else {
+            console.log("22222222")
             d.seleccionado = false;
-           // this.contador--;
+            // this.contador--;
           }
           return d;
         }
         return d;
       });
-      console.log("TAMAÑO LISTA: "+this.tamañoLista);
+      console.log("TAMAÑO LISTA: " + this.tamañoLista);
     }
     else//EVENNTO CHECK CON BUSQUEDA
     {
@@ -399,30 +517,30 @@ export class TablaComponent implements OnInit {
           d.seleccionado = isChecked;
           return d;
         }
-  
+
         if (id == -1) {
           d.seleccionado = this.mainCheckbox;
-  
+
           return d;
         }
         return d;
       });
     }
+    console.log("-------------------")
   }
 
 
   isVisibleSeleccionados: boolean = false; //METODO BOOLEANO QUE FUNCIONARA PARA MOSTRAR CUALQUIERA DE LOS 2 MODALES
   //METODO PARA MOSTAR EL MODAL DE LAS PERSONAS SELECCIONADAS: 
-  mostrarSeleccionados() {this.ListaSeleccionados = [];
-      this.ListaSeleccionados = this.ListaPersonas.filter((Persona) => Persona.seleccionado == true)
+  mostrarSeleccionados() {
+    this.ListaSeleccionados = [];
+    var CopiaLista = this.ListaPersonas.slice();
+    this.ListaSeleccionados = CopiaLista.filter((Persona) => Persona.seleccionado == true)
     if (this.ListaSeleccionados.length > 0) {
       console.log("CONTADOR: " + this.contador);
-      console.log("TAMAÑO LISTA PERSONAS: "+this.ListaPersonas.length);
-      
-      this.isVisibleSeleccionados = !this.isVisibleSeleccionados;
-      //console.log(this.isVisibleSeleccionados)
-     // console.log(this.ListaSeleccionados)
+      console.log("TAMAÑO LISTA PERSONAS: " + this.ListaPersonas.length);
 
+      this.isVisibleSeleccionados = !this.isVisibleSeleccionados;
     }
     else {
       console.log("No hay ningun seleccionado");
@@ -437,54 +555,29 @@ export class TablaComponent implements OnInit {
 
   //METODOS PARA MOSTRAR OCULTAR EL MODAL DE ELIMINAR
   isVisibleEliminar: boolean = false;
-  IdPersona: number = 0;
+  IdPersonaEliminada: number = 0;  //<-------------------------
+
   mostrarEliminar($event: Persona) {
-    this.IdPersona = $event.id;
+    console.log("TAMAÑO LISTA ANTES DE MANDARLA: " + this.tamañoLista);
+    console.log("-----------------------------");
+    for (var i = 0; i < this.ListaPersonas.length; i++) {
+      console.log(this.ListaPersonas[i]);
+    }
+    console.log("----------------------------")
+    this.IdPersonaEliminada = $event.id;
     this.isVisibleEliminar = !this.isVisibleEliminar;
-    console.log(this.IdPersona);
+
+    console.log("//////////////////////")
+    for (var i = 0; i < this.ListaBusqueda.length; i++) {
+      console.log(this.ListaBusqueda[i])
+    }
+    console.log("/////////////////////")
   }
+
+
   get_isVisibleEliminar(e: boolean)//EVENTO QUE RETORNA UN FALSE DEL MODAL,          
   {                               //EL CUAL SIGNIFICA QUE SE OCULTO
     this.isVisibleEliminar = e;
-  }
-
-  get_ListaActualizada(e: Persona[]) {
-    this.ListaPersonas = e;
-    console.log("ESTOY EN TABLA CON TAMAÑO DE "+this.ListaPersonas.length)
-    this.tamañoLista=this.ListaPersonas.length;
-      if (this.ListaPersonas.length != 0) {
-        this.ActualizarTabla();
-        ///this.ListaSeleccionados = this.ListaSeleccionados.filter((item) => item.id !== this.IdPersona)
-
-
-        for(var i = 0; i<this.ListaSeleccionados.length;i++)
-        {
-          console.log(this.ListaSeleccionados[i]);
-        }
-        console.log("ELIMINACION: "+this.ListaSeleccionados.length)
-      this.contador--;
-      }
-      else {
-        this.ListaPersonasMostrados = [];
-        this.PosicionPaginacion--;
-      }
-      console.log("ELIMINO: "+this.contador);
-      this.IdPersonaEliminadaEvent.emit(this.IdPersona);
-  }
-
-  get_ListaBusquedaActualizada(e:Persona[])
-  {
-    this.ListaBusqueda = e;
-    if (this.ListaBusqueda.length != 0) {
-
-        this.ActualizarTabla();
-        this.ListaSeleccionados = this.ListaSeleccionados.filter((item) => item.id !== this.IdPersona)
-        this.contador=this.ListaSeleccionados.length;
-    }
-    else {
-      this.ListaPersonasMostrados = [];
-      this.PosicionPaginacionBusqueda--;
-    }
   }
 
 
@@ -493,91 +586,108 @@ export class TablaComponent implements OnInit {
     var limite = 0;
     this.ListaPersonasMostrados = [];
 
-    if(this.NombreBuscado=="")//AAQUI ENTRO SIN BUSCAR
+    if (this.NombreBuscado == "")//AAQUI ENTRO SIN BUSCAR
     {
-      this.tamañoLista = this.ListaPersonas.length;
-    if (this.PosicionPaginacion < this.ListaPersonas.length) {
-      Inicio = this.PosicionPaginacion - this.NumeroFilas + 1;
+      if (this.IdPersonaEliminada <= this.NumeroFilas) {
+        if (this.tamañoLista <= this.NumeroFilas) //AQUI ENTRO CUANDO SE ENCUENTRA EN LA ULTIMA POSICION
+        {
+          limite = this.ListaPersonas.length;
+          this.PosicionPaginacion--;
+          for (var i = 1; i <= limite; i++) {
+            this.ListaPersonasMostrados.push(this.ListaPersonas[i - 1]);
+          }
+        }
+        else //AQUI ENTRO CUANDO LA POSICION NO ES LA ULTIMA
+        {
+          limite = this.NumeroFilas;
+          for (var i = 1; i <= limite; i++) {
+            this.ListaPersonasMostrados.push(this.ListaPersonas[i - 1]);
+          }
+        }
+        //LLENO EL ARREGLO DE PERSONAS QUE VOY A MOSTRAR
+      }
+      else {
 
-      limite = this.PosicionPaginacion
-      for (var i = Inicio; i <= limite; i++) {
-        this.ListaPersonasMostrados.push(this.ListaPersonas[i - 1]);
-      }
-    } else {
-      this.PosicionPaginacion = this.ListaPersonas.length;
-      limite = this.PosicionPaginacion % this.NumeroFilas;
-      Inicio = this.PosicionPaginacion - limite + 1;
-      if (limite == 0) //SI EL RESIDUO ES IGUAL A 0 SIGNIFICA QUE MOSTRARE TODOS LOS ELEMENTOS
-      {
-        limite = this.NumeroFilas;
-        Inicio = this.PosicionPaginacion - this.NumeroFilas + 1;
-      }
-      if (this.PosicionPaginacion > this.NumeroFilas) {// AQUI ENTRO SI POSICION >NUMERO FILAS
-        limite = this.ListaPersonas.length;
-        console.log("ENTREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-        this.PosicionPaginacion = this.ListaPersonas.length;
-        if (this.tamañoLista <= this.NumeroFilas) {
-          Inicio = 1;
-          if (this.tamañoLista < this.NumeroFilas) {
+        if (this.PosicionPaginacion < this.auxTamañoLista) {
+          console.log("ES MAYOR AL NUMERO DE FILAS PERO NO ES EL ULTIMO")
+          Inicio = this.PosicionPaginacion - this.NumeroFilas + 1;
+          limite = this.PosicionPaginacion;
+        }
+        else //AQUI ENTRO SI ES LA ULTIMA POSICION
+        {
+          if (this.PosicionPaginacion % this.NumeroFilas == 1) {
+            Inicio = this.PosicionPaginacion - this.NumeroFilas;
+            limite = this.PosicionPaginacion - 1;
             this.PosicionPaginacion--;
           }
+          else {
+            Inicio = this.PosicionPaginacion - (this.tamañoLista % this.NumeroFilas);
+            limite = this.PosicionPaginacion - 1
+            this.PosicionPaginacion--;
+            console.log("INICIO: " + Inicio + " LIMITE: " + limite)
+          }
+        }
 
+        for (var i = Inicio; i <= limite; i++) {
+          this.ListaPersonasMostrados.push(this.ListaPersonas[i - 1]);
+        }
+
+
+      }
+      console.log("PAGINACION: " + this.PosicionPaginacion);
+    }
+    else //AQUI ENTRO BUSCANDO //////////////////////////////////////////////////////////////////////////////
+    {
+      console.log("Paginacion Busqueda: " + this.PosicionPaginacionBusqueda)
+      if (this.PosicionPaginacionBusqueda <= this.NumeroFilas) {
+        if (this.PosicionPaginacionBusqueda < this.ListaBusqueda.length) //NO ES LA ULTIMA POSICION
+        {
+
+          limite = this.NumeroFilas;
+          for (var i = Inicio; i < limite; i++) {
+            this.ListaPersonasMostrados.push(this.ListaBusqueda[i])
+          }
+        }
+        else //ES ULTIMA POSICION
+        {
+          this.PosicionPaginacionBusqueda--
+          limite = this.ListaBusqueda.length;
+          for (var i = Inicio; i < limite; i++) {
+            this.ListaPersonasMostrados.push(this.ListaBusqueda[i])
+          }
         }
       }
-      else {//AQUI ENTRO SI POSICION <= NUMERO FILAS
-      }
-      for (var i = Inicio; i <= limite; i++) {
-        this.ListaPersonasMostrados.push(this.ListaPersonas[i - 1]);
-      }
-      this.PosicionPaginacion = this.ListaPersonas.length;
-    }
-    }
-    else //AQUI ENTRO BUSCANDO
-    {
-      var tamLista  = this.ListaBusqueda.length;
-    if (this.PosicionPaginacionBusqueda < this.ListaBusqueda.length) {
-      Inicio = this.PosicionPaginacionBusqueda - this.NumeroFilas + 1;
+      else {
+        if (this.PosicionPaginacionBusqueda < this.ListaBusqueda.length) {
+          Inicio = this.PosicionPaginacionBusqueda - this.NumeroFilas + 1;
+          limite = this.PosicionPaginacionBusqueda;
+        }
+        else {
+          console.log("333333333333333333333333333333333333333")
+          console.log("Posicion Paginacion: " + this.PosicionPaginacionBusqueda)
+          if (this.PosicionPaginacionBusqueda % this.NumeroFilas == 0) {
 
-      limite = this.PosicionPaginacionBusqueda
-      console.log("LIMITE: " + limite);
-      console.log("INICIO: " + Inicio);
-      for (var i = Inicio; i <= limite; i++) {
-        this.ListaPersonasMostrados.push(this.ListaBusqueda[i - 1]);
-      }
-    } else {
-      this.PosicionPaginacionBusqueda = this.ListaBusqueda.length;
-      limite = this.PosicionPaginacionBusqueda % this.NumeroFilas;
-      Inicio = this.PosicionPaginacionBusqueda - limite + 1;
-      if (limite == 0) //SI EL RESIDUO ES IGUAL A 0 SIGNIFICA QUE MOSTRARE TODOS LOS ELEMENTOS
-      {
-        limite = this.NumeroFilas;
-        Inicio = this.PosicionPaginacionBusqueda - this.NumeroFilas + 1;
-      }
-      if (this.PosicionPaginacionBusqueda > this.NumeroFilas) {// AQUI ENTRO SI POSICION >NUMERO FILAS
-        limite = this.ListaBusqueda.length;
-        this.PosicionPaginacionBusqueda = this.ListaBusqueda.length;
-        if (tamLista <= this.NumeroFilas) {
-          Inicio = 1;
-          if (tamLista < this.NumeroFilas) {
+            Inicio = this.PosicionPaginacionBusqueda - this.NumeroFilas + 1;
+            console.log("INICIO: " + Inicio)
+            limite = this.PosicionPaginacionBusqueda;
             this.PosicionPaginacionBusqueda--;
           }
+          else {
+            Inicio = this.PosicionPaginacionBusqueda - (this.PosicionPaginacionBusqueda % this.NumeroFilas) + 1
+            limite = this.PosicionPaginacionBusqueda;
+            console.log("Inicio: " + Inicio);
+            console.log("Limite: " + limite);
+            this.PosicionPaginacionBusqueda--;
 
+          }
+        }
+        for (var i = Inicio; i <= limite; i++) {
+          this.ListaPersonasMostrados.push(this.ListaBusqueda[i - 1]);
         }
       }
-      else {//AQUI ENTRO SI POSICION <= NUMERO FILAS
-      }
-
-      for (var i = Inicio; i <= limite; i++) {
-        this.ListaPersonasMostrados.push(this.ListaBusqueda[i - 1]);
-      }
-      this.PosicionPaginacionBusqueda = this.ListaBusqueda.length;
+      console.log("-----------------------------------------------------------");
     }
-    console.log("POSICION FINAL: " + this.PosicionPaginacionBusqueda);
-    console.log("-----------------------------------------------------------");
-
-    }
-    
-    console.log("TAMAÑO LISTA ANTES DE DAR PAGINACION: "+this.tamañoLista)
+    //console.log("TAMAÑO LISTA ANTES DE DAR PAGINACION: "+this.tamañoLista)
 
   }
 

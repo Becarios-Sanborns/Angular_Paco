@@ -15,15 +15,7 @@ export class AppComponent {
   IdActualizado :boolean=false;
   lista$ = new BehaviorSubject({});
 
-  getDatos(e:Persona[])
-  {
-    this.Lista=e;
-    this.lista$.next(this.Lista);
-  }
-
-  getIdPersonaEliminada(e : number)
-  {
-this.IdPersonaEliminiada=e;
-  }
  
+
+  
 }
