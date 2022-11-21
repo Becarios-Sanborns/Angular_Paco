@@ -58,7 +58,7 @@ Nota: Tengo un error al momento de cerrar el modal y volver quererlo abrir.
 #9 Reunión sobre la entrega del proyecto, hubo un error encontrado en la eliminación y después agregar.
 #10 Se soluciono el error anteriormente mencionado.
 
-# Semana 8 (24/10/2022 - 31/10/2022) 180 horas
+# Semana 8 (24/10/2022 - 31/10/2022) 160 horas
 #1 Solucionando error que se encontró en la revisión, al momento de eliminar en búsqueda y regresar a la tabla principal, se modificaban los ID.
 #2 Junta en meet para mostrar los avances del proyecto, además de continuar con la solución de los ID al momento de eliminar.
 #3 Se soluciono el error de los ID, pero se generó otro. Al momento de eliminar de búsqueda, volver a la tabla principal y agregar otra persona, no se mostraba la información correcta, además de modificar completamente el arreglo principal.
